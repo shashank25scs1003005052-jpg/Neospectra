@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NeoScan — Jaundice Reading Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #F5F7F7;
+    --panel: #FFFFFF;
+    --ink: #10201D;
+    --ink-soft: #5B6D69;
+    --teal: #0B4F4A;
+    --teal-deep: #073531;
+    --amber: #C9821E;
+    --line: #E1E7E6;
+    --mono: 'IBM Plex Mono', monospace;
+    --display: 'Space Grotesk', sans-serif;
+    --body: 'Inter', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:var(--body);
+  }
+  header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:20px 32px; border-bottom:1px solid var(--line); background:var(--panel);
+  }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .brand-mark{
+    width:30px; height:30px; border-radius:7px; background:var(--teal-deep);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .brand-mark span{ width:10px; height:10px; border-radius:50%; background:#5FE0C6; }
+  .brand-name{ font-family:var(--display); font-weight:700; font-size:18px; letter-spacing:-0.01em; }
+  nav{ display:flex; gap:4px; background:var(--bg); padding:4px; border-radius:10px; }
+  nav button{
+    font-family:var(--body); font-weight:600; font-size:14px; color:var(--ink-soft);
+    background:none; border:none; padding:8px 16px; border-radius:7px; cursor:pointer;
+  }
+  nav button.active{ background:var(--panel); color:var(--teal-deep); box-shadow:0 1px 2px rgba(0,0,0,.08); }
+
+  main{ max-width:760px; margin:0 auto; padding:48px 24px 80px; }
+  .page{ display:none; }
+  .page.active{ display:block; }
+
+  .eyebrow{ font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--teal); margin-bottom:8px;}
+  h1{ font-family:var(--display); font-size:32px; margin:0 0 8px; letter-spacing:-0.01em; }
+  .sub{ color:var(--ink-soft); font-size:15px; margin-bottom:32px; max-width:52ch; line-height:1.5;}
+
+  .grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .field{ display:flex; flex-direction:column; gap:6px; }
+  .field.full{ grid-column:1 / -1; }
+  label{ font-size:12px; font-weight:600; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em; }
+  input, select{
+    font-family:var(--mono); font-size:15px; padding:11px 12px;
+    border:1px solid var(--line); border-radius:8px; background:var(--panel); color:var(--ink);
+  }
+  input:focus, select:focus{ outline:2px solid var(--teal); outline-offset:1px; }
+
+  .section-label{ font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-soft); margin:28px 0 12px; padding-top:20px; border-top:1px solid var(--line);}
+
+  .submit-btn{
+    margin-top:28px; width:100%; padding:14px; border:none; border-radius:9px;
+    background:var(--teal-deep); color:#fff; font-family:var(--display); font-weight:600; font-size:15px;
+    cursor:pointer;
+  }
+  .submit-btn:hover{ background:var(--teal); }
+  .submit-btn:disabled{ opacity:.5; cursor:default; }
+
+  .readout{
+    margin-top:28px; background:var(--teal-deep); border-radius:14px; padding:28px;
+    display:none;
+  }
+  .readout.show{ display:block; }
+  .readout-label{ font-family:var(--mono); font-size:11px; color:#8FD6C7; text-transform:uppercase; letter-spacing:.1em; margin-bottom:6px;}
+  .readout-value{ font-family:var(--mono); font-size:52px; color:#5FE0C6; font-weight:600; line-height:1; }
+  .readout-unit{ font-family:var(--mono); font-size:16px; color:#8FD6C7; margin-left:8px;}
+  .readout-meta{ margin-top:14px; display:flex; gap:20px; font-family:var(--mono); font-size:12px; color:#B7D8D1; }
+
+  .error-box{
+    margin-top:20px; padding:14px 16px; background:#FBECEC; border:1px solid #E8B4B4;
+    border-radius:8px; color:#8A2A2A; font-size:14px; display:none;
+  }
+  .error-box.show{ display:block; }
+
+  table{ width:100%; border-collapse:collapse; margin-top:10px; }
+  th{ text-align:left; font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft); padding:10px 12px; border-bottom:1px solid var(--line); }
+  td{ padding:12px; font-family:var(--mono); font-size:13.5px; border-bottom:1px solid var(--line); }
+  tr:hover td{ background:#FAFBFB; }
+
+  .history-search{ display:flex; gap:10px; margin-bottom:20px; }
+  .history-search input{ flex:1; }
+  .history-search button{
+    font-family:var(--body); font-weight:600; padding:11px 20px; border-radius:8px;
+    border:1px solid var(--teal-deep); background:var(--panel); color:var(--teal-deep); cursor:pointer;
+  }
+  .empty-state{ text-align:center; padding:48px 0; color:var(--ink-soft); font-size:14px; }
+
+  .home-cards{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:32px; }
+  .home-card{ background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:22px; cursor:pointer; }
+  .home-card:hover{ border-color:var(--teal); }
+  .home-card .num{ font-family:var(--mono); font-size:12px; color:var(--teal); margin-bottom:8px;}
+  .home-card h3{ font-family:var(--display); font-size:17px; margin:0 0 6px; }
+  .home-card p{ font-size:13.5px; color:var(--ink-soft); margin:0; line-height:1.5;}
+
+  .status-dot{ display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; }
+
+  @media (max-width:600px){ .grid, .home-cards{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-mark"><span></span></div>
+    <div class="brand-name">NeoScan</div>
+  </div>
+  <nav>
+    <button data-page="home" class="active">Home</button>
+    <button data-page="predict">New Reading</button>
+    <button data-page="history">History</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- HOME -->
+  <section class="page active" id="page-home">
+    <div class="eyebrow">Bilirubin Screening Console</div>
+    <h1>Neonatal jaundice, read at the bedside.</h1>
+    <p class="sub">Enter a sensor reading manually or from device input, get an instant bilirubin estimate, and track how each baby trends over their first days.</p>
+    <div class="home-cards">
+      <div class="home-card" onclick="goTo('predict')">
+        <div class="num">01</div>
+        <h3>Take a reading</h3>
+        <p>Enter baby details and sensor values to generate a bilirubin estimate.</p>
+      </div>
+      <div class="home-card" onclick="goTo('history')">
+        <div class="num">02</div>
+        <h3>View history</h3>
+        <p>Look up a baby by code and see every reading recorded so far.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PREDICT -->
+  <section class="page" id="page-predict">
+    <div class="eyebrow">New Reading</div>
+    <h1>Enter reading details</h1>
+    <p class="sub">All fields required. Sensor values can be typed manually for now or filled by device input later.</p>
+
+    <div class="grid">
+      <div class="field"><label>Baby Code</label><input id="baby_code" value="BABY_001"></div>
+      <div class="field"><label>Sex</label>
+        <select id="sex"><option value="F">F</option><option value="M">M</option></select>
+      </div>
+      <div class="field"><label>Gestational Age (weeks)</label><input id="gest" type="number" value="40"></div>
+      <div class="field"><label>Skin Tone Category</label><input id="skin" type="number" value="3"></div>
+      <div class="field full"><label>Age at Reading (hours)</label><input id="age" type="number" value="9"></div>
+    </div>
+
+    <div class="section-label">Sensor Values</div>
+    <div class="grid">
+      <div class="field"><label>Red</label><input id="red" type="number" value="682"></div>
+      <div class="field"><label>Green</label><input id="green" type="number" value="524"></div>
+      <div class="field"><label>Blue</label><input id="blue" type="number" value="403"></div>
+      <div class="field"><label>Clear</label><input id="clear" type="number" value="1626"></div>
+    </div>
+
+    <button class="submit-btn" id="submitBtn" onclick="submitReading()">Get Prediction</button>
+
+    <div class="error-box" id="errorBox"></div>
+
+    <div class="readout" id="readout">
+      <div class="readout-label">Predicted Total Serum Bilirubin</div>
+      <div><span class="readout-value" id="readoutValue">--</span><span class="readout-unit">mg/dL</span></div>
+      <div class="readout-meta">
+        <span id="readoutAge"></span>
+        <span id="readoutTime"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- HISTORY -->
+  <section class="page" id="page-history">
+    <div class="eyebrow">Reading History</div>
+    <h1>Look up a baby</h1>
+    <p class="sub">Search by baby code to see every reading recorded so far.</p>
+
+    <div class="history-search">
+      <input id="historySearch" placeholder="e.g. BABY_001" value="BABY_001">
+      <button onclick="loadHistory()">Search</button>
+    </div>
+
+    <div id="historyResults"></div>
+  </section>
+
+</main>
+
+<script>
+const API_BASE = "http://127.0.0.1:5000";
+
+// --- navigation ---
+document.querySelectorAll('nav button').forEach(btn => {
+  btn.addEventListener('click', () => goTo(btn.dataset.page));
+});
+function goTo(page){
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelector(`nav button[data-page="${page}"]`).classList.add('active');
+}
+
+// --- predict page ---
+async function submitReading(){
+  const btn = document.getElementById('submitBtn');
+  const errorBox = document.getElementById('errorBox');
+  const readout = document.getElementById('readout');
+  errorBox.classList.remove('show');
+  readout.classList.remove('show');
+
+  const body = {
+    baby_code: document.getElementById('baby_code').value,
+    sex: document.getElementById('sex').value,
+    gestational_age_weeks: parseFloat(document.getElementById('gest').value),
+    skin_tone_category: parseInt(document.getElementById('skin').value),
+    age_hours: parseFloat(document.getElementById('age').value),
+    red: parseFloat(document.getElementById('red').value),
+    green: parseFloat(document.getElementById('green').value),
+    blue: parseFloat(document.getElementById('blue').value),
+    clear: parseFloat(document.getElementById('clear').value),
+  };
+
+  btn.disabled = true; btn.textContent = "Reading...";
+
+  try{
+    const res = await fetch(`${API_BASE}/predict`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(body)
+    });
+    if(!res.ok){
+      const err = await res.json().catch(() => ({detail: "Request failed"}));
+      throw new Error(err.detail || "Request failed");
+    }
+    const data = await res.json();
+
+    document.getElementById('readoutValue').textContent = data.predicted_bilirubin_mg_dl;
+    document.getElementById('readoutAge').textContent = `Age at reading: ${data.age_hours}h`;
+    document.getElementById('readoutTime').textContent = new Date(data.created_at).toLocaleString();
+    readout.classList.add('show');
+
+  }catch(e){
+    errorBox.textContent = "Couldn't reach the backend — make sure it's running on " + API_BASE + " with CORS enabled. (" + e.message + ")";
+    errorBox.classList.add('show');
+  }finally{
+    btn.disabled = false; btn.textContent = "Get Prediction";
+  }
+}
+
+// --- history page ---
+async function loadHistory(){
+  const code = document.getElementById('historySearch').value.trim();
+  const results = document.getElementById('historyResults');
+  results.innerHTML = `<div class="empty-state">Loading...</div>`;
+
+  if(!code){ results.innerHTML = `<div class="empty-state">Enter a baby code to search.</div>`; return; }
+
+  try{
+    const res = await fetch(`${API_BASE}/babies/${encodeURIComponent(code)}/readings`);
+    if(res.status === 404){
+      results.innerHTML = `<div class="empty-state">No baby found with code "${code}".</div>`;
+      return;
+    }
+    if(!res.ok) throw new Error("Request failed");
+    const readings = await res.json();
+
+    if(readings.length === 0){
+      results.innerHTML = `<div class="empty-state">No readings recorded yet for ${code}.</div>`;
+      return;
+    }
+
+    let rows = readings.map(r => `
+      <tr>
+        <td>${r.age_hours}h</td>
+        <td>${r.predicted_bilirubin_mg_dl} mg/dL</td>
+        <td>${r.red} / ${r.green} / ${r.blue} / ${r.clear}</td>
+        <td>${new Date(r.created_at).toLocaleString()}</td>
+      </tr>`).join('');
+
+    results.innerHTML = `
+      <table>
+        <thead><tr><th>Age</th><th>Bilirubin</th><th>R / G / B / C</th><th>Recorded</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+
+  }catch(e){
+    results.innerHTML = `<div class="empty-state">Couldn't reach the backend — make sure it's running on ${API_BASE}.</div>`;
+  }
+}
+</script>
+
+</body>
+</html>
