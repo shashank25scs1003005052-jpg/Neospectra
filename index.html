@@ -1,467 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NeoScan — Jaundice Reading Console</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NeoScan — Jaundice Reading Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #F5F7F7;
+    --panel: #FFFFFF;
+    --ink: #10201D;
+    --ink-soft: #5B6D69;
+    --teal: #0B4F4A;
+    --teal-deep: #073531;
+    --amber: #C9821E;
+    --line: #E1E7E6;
+    --mono: 'IBM Plex Mono', monospace;
+    --display: 'Space Grotesk', sans-serif;
+    --body: 'Inter', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:var(--body);
+  }
+  header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:20px 32px; border-bottom:1px solid var(--line); background:var(--panel);
+  }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .brand-mark{
+    width:30px; height:30px; border-radius:7px; background:var(--teal-deep);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .brand-mark span{ width:10px; height:10px; border-radius:50%; background:#5FE0C6; }
+  .brand-name{ font-family:var(--display); font-weight:700; font-size:18px; letter-spacing:-0.01em; }
+  nav{ display:flex; gap:4px; background:var(--bg); padding:4px; border-radius:10px; }
+  nav button{
+    font-family:var(--body); font-weight:600; font-size:14px; color:var(--ink-soft);
+    background:none; border:none; padding:8px 16px; border-radius:7px; cursor:pointer;
+  }
+  nav button.active{ background:var(--panel); color:var(--teal-deep); box-shadow:0 1px 2px rgba(0,0,0,.08); }
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  main{ max-width:760px; margin:0 auto; padding:48px 24px 80px; }
+  .page{ display:none; }
+  .page.active{ display:block; }
 
-  <style>
-    :root{
-      --bg: #F5F7F7;
-      --panel: #FFFFFF;
-      --ink: #10201D;
-      --ink-soft: #5B6D69;
-      --teal: #0B4F4A;
-      --teal-deep: #073531;
-      --amber: #C9821E;
-      --line: #E1E7E6;
-      --mono: 'IBM Plex Mono', monospace;
-      --display: 'Space Grotesk', sans-serif;
-      --body: 'Inter', sans-serif;
-    }
+  .eyebrow{ font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--teal); margin-bottom:8px;}
+  h1{ font-family:var(--display); font-size:32px; margin:0 0 8px; letter-spacing:-0.01em; }
+  .sub{ color:var(--ink-soft); font-size:15px; margin-bottom:32px; max-width:52ch; line-height:1.5;}
 
-    *{box-sizing:border-box;}
+  .grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .field{ display:flex; flex-direction:column; gap:6px; }
+  .field.full{ grid-column:1 / -1; }
+  label{ font-size:12px; font-weight:600; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em; }
+  input, select{
+    font-family:var(--mono); font-size:15px; padding:11px 12px;
+    border:1px solid var(--line); border-radius:8px; background:var(--panel); color:var(--ink);
+  }
+  input:focus, select:focus{ outline:2px solid var(--teal); outline-offset:1px; }
 
-    body{
-      margin:0;
-      background:var(--bg);
-      color:var(--ink);
-      font-family:var(--body);
-    }
+  .section-label{ font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-soft); margin:28px 0 12px; padding-top:20px; border-top:1px solid var(--line);}
 
-    header{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:20px 32px;
-      border-bottom:1px solid var(--line);
-      background:var(--panel);
-    }
+  .submit-btn{
+    margin-top:28px; width:100%; padding:14px; border:none; border-radius:9px;
+    background:var(--teal-deep); color:#fff; font-family:var(--display); font-weight:600; font-size:15px;
+    cursor:pointer;
+  }
+  .submit-btn:hover{ background:var(--teal); }
+  .submit-btn:disabled{ opacity:.5; cursor:default; }
 
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
+  .readout{
+    margin-top:28px; background:var(--teal-deep); border-radius:14px; padding:28px;
+    display:none;
+  }
+  .readout.show{ display:block; }
+  .readout-label{ font-family:var(--mono); font-size:11px; color:#8FD6C7; text-transform:uppercase; letter-spacing:.1em; margin-bottom:6px;}
+  .readout-value{ font-family:var(--mono); font-size:52px; color:#5FE0C6; font-weight:600; line-height:1; }
+  .readout-unit{ font-family:var(--mono); font-size:16px; color:#8FD6C7; margin-left:8px;}
+  .readout-meta{ margin-top:14px; display:flex; gap:20px; font-family:var(--mono); font-size:12px; color:#B7D8D1; }
 
-    .brand-mark{
-      width:30px;
-      height:30px;
-      border-radius:7px;
-      background:var(--teal-deep);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
+  .error-box{
+    margin-top:20px; padding:14px 16px; background:#FBECEC; border:1px solid #E8B4B4;
+    border-radius:8px; color:#8A2A2A; font-size:14px; display:none;
+  }
+  .error-box.show{ display:block; }
 
-    .brand-mark span{
-      width:10px;
-      height:10px;
-      border-radius:50%;
-      background:#5FE0C6;
-    }
+  table{ width:100%; border-collapse:collapse; margin-top:10px; }
+  th{ text-align:left; font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft); padding:10px 12px; border-bottom:1px solid var(--line); }
+  td{ padding:12px; font-family:var(--mono); font-size:13.5px; border-bottom:1px solid var(--line); }
+  tr:hover td{ background:#FAFBFB; }
 
-    .brand-name{
-      font-family:var(--display);
-      font-weight:700;
-      font-size:18px;
-      letter-spacing:-0.01em;
-    }
+  .history-search{ display:flex; gap:10px; margin-bottom:20px; }
+  .history-search input{ flex:1; }
+  .history-search button{
+    font-family:var(--body); font-weight:600; padding:11px 20px; border-radius:8px;
+    border:1px solid var(--teal-deep); background:var(--panel); color:var(--teal-deep); cursor:pointer;
+  }
+  .empty-state{ text-align:center; padding:48px 0; color:var(--ink-soft); font-size:14px; }
 
-    nav{
-      display:flex;
-      gap:4px;
-      background:var(--bg);
-      padding:4px;
-      border-radius:10px;
-    }
+  .home-cards{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:32px; }
+  .home-card{ background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:22px; cursor:pointer; }
+  .home-card:hover{ border-color:var(--teal); }
+  .home-card .num{ font-family:var(--mono); font-size:12px; color:var(--teal); margin-bottom:8px;}
+  .home-card h3{ font-family:var(--display); font-size:17px; margin:0 0 6px; }
+  .home-card p{ font-size:13.5px; color:var(--ink-soft); margin:0; line-height:1.5;}
 
-    nav button{
-      font-family:var(--body);
-      font-weight:600;
-      font-size:14px;
-      color:var(--ink-soft);
-      background:none;
-      border:none;
-      padding:8px 16px;
-      border-radius:7px;
-      cursor:pointer;
-    }
+  .status-dot{ display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; }
 
-    nav button.active{
-      background:var(--panel);
-      color:var(--teal-deep);
-      box-shadow:0 1px 2px rgba(0,0,0,.08);
-    }
-
-    main{
-      max-width:760px;
-      margin:0 auto;
-      padding:48px 24px 80px;
-    }
-
-    .page{
-      display:none;
-    }
-
-    .page.active{
-      display:block;
-    }
-
-    .eyebrow{
-      font-family:var(--mono);
-      font-size:12px;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      color:var(--teal);
-      margin-bottom:8px;
-    }
-
-    h1{
-      font-family:var(--display);
-      font-size:32px;
-      margin:0 0 8px;
-      letter-spacing:-0.01em;
-    }
-
-    .sub{
-      color:var(--ink-soft);
-      font-size:15px;
-      margin-bottom:32px;
-      max-width:52ch;
-      line-height:1.5;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:14px;
-    }
-
-    .field{
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-    }
-
-    .field.full{
-      grid-column:1 / -1;
-    }
-
-    label{
-      font-size:12px;
-      font-weight:600;
-      color:var(--ink-soft);
-      text-transform:uppercase;
-      letter-spacing:.04em;
-    }
-
-    input,
-    select{
-      font-family:var(--mono);
-      font-size:15px;
-      padding:11px 12px;
-      border:1px solid var(--line);
-      border-radius:8px;
-      background:var(--panel);
-      color:var(--ink);
-    }
-
-    input:focus,
-    select:focus{
-      outline:2px solid var(--teal);
-      outline-offset:1px;
-    }
-
-    .section-label{
-      font-family:var(--mono);
-      font-size:11px;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      color:var(--ink-soft);
-      margin:28px 0 12px;
-      padding-top:20px;
-      border-top:1px solid var(--line);
-    }
-
-    .submit-btn{
-      margin-top:28px;
-      width:100%;
-      padding:14px;
-      border:none;
-      border-radius:9px;
-      background:var(--teal-deep);
-      color:#fff;
-      font-family:var(--display);
-      font-weight:600;
-      font-size:15px;
-      cursor:pointer;
-    }
-
-    .submit-btn:hover{
-      background:var(--teal);
-    }
-
-    .submit-btn:disabled{
-      opacity:.5;
-      cursor:default;
-    }
-
-    .secondary-btn{
-      margin-top:10px;
-      width:100%;
-      padding:12px;
-      border:1px solid var(--teal-deep);
-      border-radius:9px;
-      background:var(--panel);
-      color:var(--teal-deep);
-      font-family:var(--display);
-      font-weight:600;
-      font-size:14px;
-      cursor:pointer;
-    }
-
-    .secondary-btn:hover{
-      background:#F8FAFA;
-    }
-
-    .secondary-btn:disabled{
-      opacity:.5;
-      cursor:default;
-    }
-
-    .status-box{
-      margin-top:16px;
-      padding:12px 14px;
-      background:#EEF7F5;
-      border:1px solid #B9DED6;
-      border-radius:8px;
-      color:var(--teal-deep);
-      font-size:14px;
-      display:none;
-    }
-
-    .status-box.show{
-      display:block;
-    }
-
-    .readout{
-      margin-top:28px;
-      background:var(--teal-deep);
-      border-radius:14px;
-      padding:28px;
-      display:none;
-    }
-
-    .readout.show{
-      display:block;
-    }
-
-    .readout-label{
-      font-family:var(--mono);
-      font-size:11px;
-      color:#8FD6C7;
-      text-transform:uppercase;
-      letter-spacing:.1em;
-      margin-bottom:6px;
-    }
-
-    .readout-value{
-      font-family:var(--mono);
-      font-size:52px;
-      color:#5FE0C6;
-      font-weight:600;
-      line-height:1;
-    }
-
-    .readout-unit{
-      font-family:var(--mono);
-      font-size:16px;
-      color:#8FD6C7;
-      margin-left:8px;
-    }
-
-    .readout-meta{
-      margin-top:14px;
-      display:flex;
-      gap:20px;
-      flex-wrap:wrap;
-      font-family:var(--mono);
-      font-size:12px;
-      color:#B7D8D1;
-    }
-
-    .error-box{
-      margin-top:20px;
-      padding:14px 16px;
-      background:#FBECEC;
-      border:1px solid #E8B4B4;
-      border-radius:8px;
-      color:#8A2A2A;
-      font-size:14px;
-      display:none;
-    }
-
-    .error-box.show{
-      display:block;
-    }
-
-    table{
-      width:100%;
-      border-collapse:collapse;
-      margin-top:10px;
-    }
-
-    th{
-      text-align:left;
-      font-family:var(--mono);
-      font-size:11px;
-      text-transform:uppercase;
-      letter-spacing:.05em;
-      color:var(--ink-soft);
-      padding:10px 12px;
-      border-bottom:1px solid var(--line);
-    }
-
-    td{
-      padding:12px;
-      font-family:var(--mono);
-      font-size:13.5px;
-      border-bottom:1px solid var(--line);
-    }
-
-    tr:hover td{
-      background:#FAFBFB;
-    }
-
-    .history-search{
-      display:flex;
-      gap:10px;
-      margin-bottom:20px;
-    }
-
-    .history-search input{
-      flex:1;
-    }
-
-    .history-search button{
-      font-family:var(--body);
-      font-weight:600;
-      padding:11px 20px;
-      border-radius:8px;
-      border:1px solid var(--teal-deep);
-      background:var(--panel);
-      color:var(--teal-deep);
-      cursor:pointer;
-    }
-
-    .empty-state{
-      text-align:center;
-      padding:48px 0;
-      color:var(--ink-soft);
-      font-size:14px;
-    }
-
-    .home-cards{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:14px;
-      margin-top:32px;
-    }
-
-    .home-card{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:22px;
-      cursor:pointer;
-    }
-
-    .home-card:hover{
-      border-color:var(--teal);
-    }
-
-    .home-card .num{
-      font-family:var(--mono);
-      font-size:12px;
-      color:var(--teal);
-      margin-bottom:8px;
-    }
-
-    .home-card h3{
-      font-family:var(--display);
-      font-size:17px;
-      margin:0 0 6px;
-    }
-
-    .home-card p{
-      font-size:13.5px;
-      color:var(--ink-soft);
-      margin:0;
-      line-height:1.5;
-    }
-
-    .profile-card{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:20px;
-      margin-bottom:20px;
-    }
-
-    .profile-card h3{
-      font-family:var(--display);
-      margin:0 0 14px;
-      font-size:18px;
-    }
-
-    .profile-details{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-      font-family:var(--mono);
-      font-size:13px;
-    }
-
-    .profile-details div{
-      padding:10px;
-      background:var(--bg);
-      border-radius:7px;
-    }
-
-    .profile-details strong{
-      display:block;
-      font-size:10px;
-      color:var(--ink-soft);
-      text-transform:uppercase;
-      margin-bottom:4px;
-    }
-
-    .status-dot{
-      display:inline-block;
-      width:8px;
-      height:8px;
-      border-radius:50%;
-      margin-right:6px;
-    }
-
-    @media (max-width:600px){
-      .grid,
-      .home-cards,
-      .profile-details{
-        grid-template-columns:1fr;
-      }
-
-      .history-search{
-        flex-direction:column;
-      }
-    }
-  </style>
+  @media (max-width:600px){ .grid, .home-cards{ grid-template-columns:1fr; } }
+</style>
 </head>
-
 <body>
 
 <header>
@@ -469,9 +119,9 @@
     <div class="brand-mark"><span></span></div>
     <div class="brand-name">NeoScan</div>
   </div>
-
   <nav>
     <button data-page="home" class="active">Home</button>
+    <button data-page="profile">Baby Profile</button>
     <button data-page="predict">New Reading</button>
     <button data-page="history">History</button>
   </nav>
@@ -483,1301 +133,259 @@
   <section class="page active" id="page-home">
     <div class="eyebrow">Bilirubin Screening Console</div>
     <h1>Neonatal jaundice, read at the bedside.</h1>
-
-    <p class="sub">
-      Create or select a baby profile, enter a sensor reading manually or from
-      device input, get an instant bilirubin estimate, and track every reading
-      over time.
-    </p>
-
+    <p class="sub">Enter a sensor reading manually or from device input, get an instant bilirubin estimate, and track how each baby trends over their first days.</p>
     <div class="home-cards">
       <div class="home-card" onclick="goTo('predict')">
         <div class="num">01</div>
         <h3>Take a reading</h3>
-        <p>Create/select a baby profile and generate a bilirubin estimate.</p>
+        <p>Enter baby details and sensor values to generate a bilirubin estimate.</p>
       </div>
-
       <div class="home-card" onclick="goTo('history')">
         <div class="num">02</div>
         <h3>View history</h3>
-        <p>Look up a baby by code and see the saved profile and all readings.</p>
+        <p>Look up a baby by code and see every reading recorded so far.</p>
       </div>
     </div>
   </section>
 
 
-  <!-- NEW READING -->
-  <section class="page" id="page-predict">
+  <section class="page" id="page-profile">
+    <div class="eyebrow">Baby Profile</div>
+    <h1>Create baby profile</h1>
+    <p class="sub">Enter the baby's information once. The backend stores it and uses it for later readings.</p>
+    <div class="grid">
+      <div class="field"><label>Baby Code</label><input id="profile_baby_code" placeholder="BABY_001"></div>
+      <div class="field"><label>Sex</label><select id="profile_sex"><option value="F">F</option><option value="M">M</option></select></div>
+      <div class="field"><label>Gestational Age (weeks)</label><input id="profile_gest" type="number" min="24" max="45" step="0.1" placeholder="38"></div>
+      <div class="field"><label>Skin Tone Category</label><input id="profile_skin" type="number" min="1" max="5" placeholder="1 - 5"></div>
+    </div>
+    <button class="submit-btn" id="profileBtn" onclick="createProfile()">Save Baby Profile</button>
+    <div class="error-box" id="profileError"></div>
+    <div class="readout" id="profileSuccess">
+      <div class="readout-label">Profile saved</div>
+      <div style="font-family:var(--display);font-size:20px;color:#fff;font-weight:600;">Baby profile is ready for readings.</div>
+      <div class="readout-meta"><span id="profileSavedCode"></span></div>
+    </div>
+  </section>
 
+  <!-- PREDICT -->
+  <section class="page" id="page-predict">
     <div class="eyebrow">New Reading</div>
     <h1>Enter reading details</h1>
-
-    <p class="sub">
-      Enter a Baby ID to load an existing profile or enter new baby details to
-      create and save a profile. Sensor values can be typed manually for now
-      and replaced by real device input later.
-    </p>
-
-
-    <!-- BABY PROFILE -->
-    <div class="section-label">Baby Profile</div>
+    <p class="sub">All fields required. Sensor values can be typed manually for now or filled by device input later.</p>
 
     <div class="grid">
-
-      <div class="field full">
-        <label>Baby ID / Code</label>
-        <input
-          id="baby_code"
-          placeholder="e.g. BABY_001"
-          value="BABY_001"
-          autocomplete="off"
-        >
-      </div>
-
-      <div class="field">
-        <label>Sex</label>
-        <select id="sex">
-          <option value="">Select</option>
-          <option value="F">Female</option>
-          <option value="M">Male</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label>Gestational Age (weeks)</label>
-        <input id="gest" type="number" min="0" step="0.1" value="40">
-      </div>
-
-      <div class="field full">
-        <label>Skin Tone Category</label>
-        <input id="skin" type="number" min="1" step="1" value="3">
-      </div>
-
+      <div class="field full"><label>Baby Code</label><input id="baby_code" placeholder="Enter an existing baby code"></div>
+      <div class="field full"><label>Age at Reading (hours)</label><input id="age" type="number" min="0" step="0.01" placeholder="e.g. 48"></div>
     </div>
+    <div class="section-label">Saved Profile</div>
+    <p class="sub" style="margin-bottom:0;">Sex, gestational age and skin tone come from the saved baby profile. They are not entered again for each reading.</p>
 
-    <button
-      class="secondary-btn"
-      id="profileBtn"
-      onclick="findOrCreateBaby()"
-    >
-      Find / Save Baby Profile
-    </button>
-
-    <div class="status-box" id="profileStatus"></div>
-
-
-    <!-- READING DETAILS -->
-    <div class="section-label">Reading Details</div>
-
-    <div class="grid">
-      <div class="field full">
-        <label>Age at Reading (hours)</label>
-        <input id="age" type="number" min="0" step="0.1" value="9">
-      </div>
-    </div>
-
-
-    <!-- SENSOR VALUES -->
     <div class="section-label">Sensor Values</div>
-
     <div class="grid">
-      <div class="field">
-        <label>Red</label>
-        <input id="red" type="number" value="682">
-      </div>
-
-      <div class="field">
-        <label>Green</label>
-        <input id="green" type="number" value="524">
-      </div>
-
-      <div class="field">
-        <label>Blue</label>
-        <input id="blue" type="number" value="403">
-      </div>
-
-      <div class="field">
-        <label>Clear</label>
-        <input id="clear" type="number" value="1626">
-      </div>
+      <div class="field"><label>Red</label><input id="red" type="number" value="682"></div>
+      <div class="field"><label>Green</label><input id="green" type="number" value="524"></div>
+      <div class="field"><label>Blue</label><input id="blue" type="number" value="403"></div>
+      <div class="field"><label>Clear</label><input id="clear" type="number" value="1626"></div>
     </div>
 
-
-    <button
-      class="submit-btn"
-      id="submitBtn"
-      onclick="takeReading()"
-    >
-      Take Reading
-    </button>
-
+    <button class="submit-btn" id="submitBtn" onclick="submitReading()">Get Prediction</button>
 
     <div class="error-box" id="errorBox"></div>
 
-
-    <!-- RESULT -->
     <div class="readout" id="readout">
-      <div class="readout-label">
-        Predicted Total Serum Bilirubin
-      </div>
-
-      <div>
-        <span class="readout-value" id="readoutValue">--</span>
-        <span class="readout-unit">mg/dL</span>
-      </div>
-
+      <div class="readout-label">Predicted Total Serum Bilirubin</div>
+      <div><span class="readout-value" id="readoutValue">--</span><span class="readout-unit">mg/dL</span></div>
       <div class="readout-meta">
-        <span id="readoutBaby"></span>
         <span id="readoutAge"></span>
         <span id="readoutTime"></span>
       </div>
     </div>
-
   </section>
-
 
   <!-- HISTORY -->
   <section class="page" id="page-history">
-
     <div class="eyebrow">Reading History</div>
     <h1>Look up a baby</h1>
-
-    <p class="sub">
-      Search by Baby ID to see the saved baby profile and every recorded reading.
-      Newest readings are shown first.
-    </p>
+    <p class="sub">Search by baby code to see every reading recorded so far.</p>
 
     <div class="history-search">
-      <input
-        id="historySearch"
-        placeholder="e.g. BABY_001"
-        value="BABY_001"
-      >
-
-      <button onclick="loadHistory()">
-        Search
-      </button>
+      <input id="historySearch" placeholder="e.g. BABY_001" value="BABY_001">
+      <button onclick="loadHistory()">Search</button>
     </div>
 
     <div id="historyResults"></div>
-
   </section>
 
 </main>
 
-
 <script>
-
-/* =========================================================
-   API CONFIGURATION
-   ========================================================= */
-
 const API_BASE = "http://127.0.0.1:8000";
 
-/*
-Expected FastAPI endpoints:
-
-POST /babies
-GET  /babies/{baby_code}
-POST /babies/{baby_code}/readings
-POST /predict
-GET  /babies/{baby_code}/readings
-
-If your FastAPI routes use different names, only change
-the endpoint constants below.
-*/
-
-const API_ENDPOINTS = {
-  CREATE_BABY: (code) =>
-    `${API_BASE}/babies`,
-
-  GET_BABY: (code) =>
-    `${API_BASE}/babies/${encodeURIComponent(code)}`,
-
-  SAVE_READING: (code) =>
-    `${API_BASE}/babies/${encodeURIComponent(code)}/readings`,
-
-  ESTIMATE_TSB:
-    `${API_BASE}/predict`,
-
-  GET_HISTORY: (code) =>
-    `${API_BASE}/babies/${encodeURIComponent(code)}/readings`
-};
-
-
-/* =========================================================
-   FRONTEND STATE
-   ========================================================= */
-
-let selectedBaby = null;
-
-
-/* =========================================================
-   NAVIGATION
-   ========================================================= */
-
+// --- navigation ---
 document.querySelectorAll('nav button').forEach(btn => {
   btn.addEventListener('click', () => goTo(btn.dataset.page));
 });
-
 function goTo(page){
-
-  document
-    .querySelectorAll('.page')
-    .forEach(p => p.classList.remove('active'));
-
-  document
-    .querySelectorAll('nav button')
-    .forEach(b => b.classList.remove('active'));
-
-  document
-    .getElementById('page-' + page)
-    .classList.add('active');
-
-  document
-    .querySelector(`nav button[data-page="${page}"]`)
-    .classList.add('active');
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelector(`nav button[data-page="${page}"]`).classList.add('active');
 }
 
 
-/* =========================================================
-   UTILITY FUNCTIONS
-   ========================================================= */
+// --- baby profile ---
+async function createProfile(){
+  const btn = document.getElementById('profileBtn');
+  const error = document.getElementById('profileError');
+  const success = document.getElementById('profileSuccess');
 
-function showError(message){
+  error.classList.remove('show');
+  success.classList.remove('show');
 
-  const errorBox =
-    document.getElementById('errorBox');
+  const baby_code = document.getElementById('profile_baby_code').value.trim();
+  const sex = document.getElementById('profile_sex').value;
+  const gestational_age_weeks = parseFloat(document.getElementById('profile_gest').value);
+  const skin_tone_category = parseInt(document.getElementById('profile_skin').value);
 
-  errorBox.textContent = message;
-  errorBox.classList.add('show');
-}
-
-function clearError(){
-
-  const errorBox =
-    document.getElementById('errorBox');
-
-  errorBox.textContent = "";
-  errorBox.classList.remove('show');
-}
-
-function showProfileStatus(message){
-
-  const box =
-    document.getElementById('profileStatus');
-
-  box.textContent = message;
-  box.classList.add('show');
-}
-
-function hideProfileStatus(){
-
-  document
-    .getElementById('profileStatus')
-    .classList.remove('show');
-}
-
-function getBabyCode(){
-
-  return document
-    .getElementById('baby_code')
-    .value
-    .trim();
-}
-
-function getBabyProfilePayload(){
-
-  return {
-    baby_code: getBabyCode(),
-    sex: document.getElementById('sex').value,
-    gestational_age_weeks:
-      parseFloat(document.getElementById('gest').value),
-    skin_tone_category:
-      parseInt(document.getElementById('skin').value)
-  };
-}
-
-function getReadingPayload(){
-
-  return {
-    baby_code: getBabyCode(),
-
-    age_hours:
-      parseFloat(document.getElementById('age').value),
-
-    red:
-      parseFloat(document.getElementById('red').value),
-
-    green:
-      parseFloat(document.getElementById('green').value),
-
-    blue:
-      parseFloat(document.getElementById('blue').value),
-
-    clear:
-      parseFloat(document.getElementById('clear').value)
-  };
-}
-
-function validateBabyProfile(profile){
-
-  if(!profile.baby_code){
-    throw new Error("Please enter a Baby ID / Code.");
+  if(!baby_code){
+    error.textContent = "Enter a baby code.";
+    error.classList.add('show');
+    return;
   }
-
-  if(!profile.sex){
-    throw new Error("Please select the baby's sex.");
+  if(Number.isNaN(gestational_age_weeks)){
+    error.textContent = "Enter gestational age.";
+    error.classList.add('show');
+    return;
   }
-
-  if(
-    Number.isNaN(profile.gestational_age_weeks) ||
-    profile.gestational_age_weeks <= 0
-  ){
-    throw new Error(
-      "Please enter a valid gestational age."
-    );
-  }
-
-  if(
-    Number.isNaN(profile.skin_tone_category)
-  ){
-    throw new Error(
-      "Please enter a valid skin tone category."
-    );
-  }
-}
-
-function validateReading(reading){
-
-  if(
-    Number.isNaN(reading.age_hours) ||
-    reading.age_hours < 0
-  ){
-    throw new Error(
-      "Please enter a valid age at reading."
-    );
-  }
-
-  const sensorFields = [
-    ["Red", reading.red],
-    ["Green", reading.green],
-    ["Blue", reading.blue],
-    ["Clear", reading.clear]
-  ];
-
-  for(const [name, value] of sensorFields){
-
-    if(Number.isNaN(value)){
-      throw new Error(
-        `Please enter a valid ${name} sensor value.`
-      );
-    }
-  }
-}
-
-async function getErrorMessage(response){
-
-  const data =
-    await response.json().catch(() => null);
-
-  if(data){
-
-    if(typeof data.detail === "string"){
-      return data.detail;
-    }
-
-    if(typeof data.message === "string"){
-      return data.message;
-    }
-
-    if(Array.isArray(data.detail)){
-      return data.detail
-        .map(item => item.msg || JSON.stringify(item))
-        .join(", ");
-    }
-  }
-
-  return `Request failed with status ${response.status}.`;
-}
-
-function fillProfileForm(baby){
-
-  if(!baby) return;
-
-  if(baby.baby_code !== undefined){
-    document.getElementById('baby_code').value =
-      baby.baby_code;
-  }
-
-  if(baby.sex !== undefined){
-    document.getElementById('sex').value =
-      baby.sex;
-  }
-
-  if(baby.gestational_age_weeks !== undefined){
-    document.getElementById('gest').value =
-      baby.gestational_age_weeks;
-  }
-
-  if(baby.skin_tone_category !== undefined){
-    document.getElementById('skin').value =
-      baby.skin_tone_category;
-  }
-}
-
-function normalizeReadingResponse(data){
-
-  return {
-    baby_code:
-      data.baby_code ??
-      getBabyCode(),
-
-    age_hours:
-      data.age_hours ??
-      parseFloat(document.getElementById('age').value),
-
-    red:
-      data.red ??
-      parseFloat(document.getElementById('red').value),
-
-    green:
-      data.green ??
-      parseFloat(document.getElementById('green').value),
-
-    blue:
-      data.blue ??
-      parseFloat(document.getElementById('blue').value),
-
-    clear:
-      data.clear ??
-      parseFloat(document.getElementById('clear').value),
-
-    predicted_bilirubin_mg_dl:
-      data.predicted_bilirubin_mg_dl ??
-      data.estimated_tsb_mg_dl ??
-      data.tsb_mg_dl ??
-      null,
-
-    created_at:
-      data.created_at ??
-      data.reading_timestamp ??
-      new Date().toISOString()
-  };
-}
-
-
-/* =========================================================
-   1 + 2. FIND EXISTING BABY OR CREATE NEW PROFILE
-   ========================================================= */
-
-async function findOrCreateBaby(){
-
-  const btn =
-    document.getElementById('profileBtn');
-
-  clearError();
-  hideProfileStatus();
-
-  const code = getBabyCode();
-
-  if(!code){
-    showError(
-      "Please enter a Baby ID / Code first."
-    );
-    return null;
+  if(Number.isNaN(skin_tone_category) || skin_tone_category < 1 || skin_tone_category > 5){
+    error.textContent = "Skin tone category must be between 1 and 5.";
+    error.classList.add('show');
+    return;
   }
 
   btn.disabled = true;
-  btn.textContent = "Checking Baby...";
+  btn.textContent = "Saving...";
 
   try{
+    const res = await fetch(`${API_BASE}/babies`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        baby_code,
+        sex,
+        gestational_age_weeks,
+        skin_tone_category
+      })
+    });
 
-    /*
-      First try to find an existing baby profile.
-    */
-
-    const searchResponse =
-      await fetch(
-        API_ENDPOINTS.GET_BABY(code)
-      );
-
-    if(searchResponse.ok){
-
-      const baby =
-        await searchResponse.json();
-
-      selectedBaby = baby;
-
-      fillProfileForm(baby);
-
-      showProfileStatus(
-        `Existing baby profile loaded: ${code}`
-      );
-
-      return baby;
+    if(!res.ok){
+      const err = await res.json().catch(() => ({detail:"Request failed"}));
+      throw new Error(err.detail || "Could not save profile");
     }
 
+    const data = await res.json();
+    document.getElementById('profileSavedCode').textContent =
+      `Baby code: ${data.baby_code || baby_code}`;
+    document.getElementById('baby_code').value = baby_code;
+    success.classList.add('show');
 
-    /*
-      404 means the Baby ID does not exist,
-      so create a new profile.
-    */
-
-    if(searchResponse.status !== 404){
-
-      const message =
-        await getErrorMessage(searchResponse);
-
-      throw new Error(message);
-    }
-
-
-    /*
-      Create new baby profile.
-    */
-
-    const profile =
-      getBabyProfilePayload();
-
-    validateBabyProfile(profile);
-
-    btn.textContent = "Saving Profile...";
-
-    const createResponse =
-      await fetch(
-        API_ENDPOINTS.CREATE_BABY(code),
-        {
-          method: "POST",
-
-          headers: {
-            "Content-Type": "application/json"
-          },
-
-          body: JSON.stringify(profile)
-        }
-      );
-
-    if(!createResponse.ok){
-
-      const message =
-        await getErrorMessage(createResponse);
-
-      throw new Error(message);
-    }
-
-    const createdBaby =
-      await createResponse.json();
-
-    selectedBaby =
-      createdBaby.baby ||
-      createdBaby;
-
-    fillProfileForm(selectedBaby);
-
-    showProfileStatus(
-      `New baby profile saved successfully: ${code}`
-    );
-
-    return selectedBaby;
-
-  }catch(error){
-
-    selectedBaby = null;
-
-    showError(
-      "Unable to find or save the baby profile. " +
-      error.message
-    );
-
-    return null;
-
+  }catch(e){
+    error.textContent = e.message;
+    error.classList.add('show');
   }finally{
-
     btn.disabled = false;
-    btn.textContent =
-      "Find / Save Baby Profile";
+    btn.textContent = "Save Baby Profile";
   }
 }
 
-
-/* =========================================================
-   3 + 4. TAKE READING, ESTIMATE TSB, SAVE READING
-   ========================================================= */
-
-async function takeReading(){
-
-  const btn =
-    document.getElementById('submitBtn');
-
-  const readout =
-    document.getElementById('readout');
-
-  clearError();
-
+// --- predict page ---
+async function submitReading(){
+  const btn = document.getElementById('submitBtn');
+  const errorBox = document.getElementById('errorBox');
+  const readout = document.getElementById('readout');
+  errorBox.classList.remove('show');
   readout.classList.remove('show');
 
+  const body = {
+    baby_code: document.getElementById('baby_code').value.trim(),
+    age_hours: parseFloat(document.getElementById('age').value),
+    red: parseFloat(document.getElementById('red').value),
+    green: parseFloat(document.getElementById('green').value),
+    blue: parseFloat(document.getElementById('blue').value),
+    clear: parseFloat(document.getElementById('clear').value),
+  };
 
-  /*
-    Step A:
-    Ensure that the Baby ID exists.
+  if(!body.baby_code) throw new Error("Enter a baby code. Create the baby profile first.");
+  if(Number.isNaN(body.age_hours)) throw new Error("Enter the baby's age at the time of reading.");
 
-    If selectedBaby does not match the current ID,
-    find/create the profile first.
-  */
-
-  const currentCode = getBabyCode();
-
-  if(
-    !selectedBaby ||
-    selectedBaby.baby_code !== currentCode
-  ){
-
-    btn.disabled = true;
-    btn.textContent = "Preparing Baby Profile...";
-
-    const baby =
-      await findOrCreateBaby();
-
-    if(!baby){
-      btn.disabled = false;
-      btn.textContent = "Take Reading";
-      return;
-    }
-  }
-
-
-  /*
-    Step B:
-    Read current manual sensor values.
-
-    Later this function can be replaced with:
-    await getDeviceSensorValues()
-  */
-
-  let reading;
+  btn.disabled = true; btn.textContent = "Reading...";
 
   try{
-
-    reading =
-      getReadingPayload();
-
-    validateReading(reading);
-
-  }catch(error){
-
-    showError(error.message);
-
-    btn.disabled = false;
-    btn.textContent = "Take Reading";
-
-    return;
-  }
-
-
-  btn.disabled = true;
-  btn.textContent = "Reading Device...";
-
-
-  try{
-
-    /*
-      Short processing/loading state.
-
-      This is where real NeoSpectra / ESP32 /
-      sensor-device communication can later be integrated.
-    */
-
-    await new Promise(resolve =>
-      setTimeout(resolve, 1200)
-    );
-
-
-    /*
-      Step C:
-      Estimate TSB.
-
-      Send both baby profile information and sensor data
-      because the current ML prediction endpoint may require
-      these complete fields.
-    */
-
-    btn.textContent = "Estimating TSB...";
-
-    const predictionPayload = {
-
-      baby_code:
-        currentCode,
-
-      sex:
-        document.getElementById('sex').value,
-
-      gestational_age_weeks:
-        parseFloat(
-          document.getElementById('gest').value
-        ),
-
-      skin_tone_category:
-        parseInt(
-          document.getElementById('skin').value
-        ),
-
-      age_hours:
-        reading.age_hours,
-
-      red:
-        reading.red,
-
-      green:
-        reading.green,
-
-      blue:
-        reading.blue,
-
-      clear:
-        reading.clear
-    };
-
-
-    const predictionResponse =
-      await fetch(
-        API_ENDPOINTS.ESTIMATE_TSB,
-        {
-          method: "POST",
-
-          headers: {
-            "Content-Type": "application/json"
-          },
-
-          body:
-            JSON.stringify(predictionPayload)
-        }
-      );
-
-
-    if(!predictionResponse.ok){
-
-      const message =
-        await getErrorMessage(
-          predictionResponse
-        );
-
-      throw new Error(message);
+    const res = await fetch(`${API_BASE}/predict`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(body)
+    });
+    if(!res.ok){
+      const err = await res.json().catch(() => ({detail: "Request failed"}));
+      throw new Error(err.detail || "Request failed");
     }
+    const data = await res.json();
 
-
-    const prediction =
-      await predictionResponse.json();
-
-
-    const predictedTSB =
-      prediction.predicted_bilirubin_mg_dl ??
-      prediction.estimated_tsb_mg_dl ??
-      prediction.tsb_mg_dl;
-
-
-    if(
-      predictedTSB === undefined ||
-      predictedTSB === null
-    ){
-      throw new Error(
-        "The backend did not return an estimated TSB value."
-      );
-    }
-
-
-    /*
-      Step D:
-      Save the completed reading under this Baby ID.
-    */
-
-    btn.textContent = "Saving Reading...";
-
-
-    const savePayload = {
-
-      baby_code:
-        currentCode,
-
-      age_hours:
-        reading.age_hours,
-
-      red:
-        reading.red,
-
-      green:
-        reading.green,
-
-      blue:
-        reading.blue,
-
-      clear:
-        reading.clear,
-
-      predicted_bilirubin_mg_dl:
-        predictedTSB
-    };
-
-
-    const saveResponse =
-      await fetch(
-        API_ENDPOINTS.SAVE_READING(currentCode),
-        {
-          method: "POST",
-
-          headers: {
-            "Content-Type": "application/json"
-          },
-
-          body:
-            JSON.stringify(savePayload)
-        }
-      );
-
-
-    if(!saveResponse.ok){
-
-      const message =
-        await getErrorMessage(
-          saveResponse
-        );
-
-      throw new Error(message);
-    }
-
-
-    const savedReadingResponse =
-      await saveResponse.json();
-
-
-    const savedReading =
-      normalizeReadingResponse({
-        ...prediction,
-        ...savePayload,
-        ...savedReadingResponse,
-        predicted_bilirubin_mg_dl:
-          savedReadingResponse
-            .predicted_bilirubin_mg_dl
-          ??
-          predictedTSB
-      });
-
-
-    /*
-      Step E:
-      Display final result.
-    */
-
-    document
-      .getElementById('readoutValue')
-      .textContent =
-        Number(
-          savedReading
-            .predicted_bilirubin_mg_dl
-        ).toFixed(2);
-
-
-    document
-      .getElementById('readoutBaby')
-      .textContent =
-        `Baby: ${savedReading.baby_code}`;
-
-
-    document
-      .getElementById('readoutAge')
-      .textContent =
-        `Age: ${savedReading.age_hours}h`;
-
-
-    document
-      .getElementById('readoutTime')
-      .textContent =
-        `Recorded: ${
-          new Date(
-            savedReading.created_at
-          ).toLocaleString()
-        }`;
-
-
+    document.getElementById('readoutValue').textContent = data.predicted_bilirubin_mg_dl;
+    document.getElementById('readoutAge').textContent = `Age at reading: ${data.age_hours}h`;
+    document.getElementById('readoutTime').textContent = new Date(data.created_at).toLocaleString();
     readout.classList.add('show');
 
-
-    showProfileStatus(
-      `Reading saved successfully under ${currentCode}.`
-    );
-
-
-  }catch(error){
-
-    showError(
-      "Unable to complete the reading. " +
-      error.message
-    );
-
+  }catch(e){
+    errorBox.textContent = "Couldn't reach the backend — make sure it's running on " + API_BASE + " with CORS enabled. (" + e.message + ")";
+    errorBox.classList.add('show');
   }finally{
-
-    btn.disabled = false;
-    btn.textContent = "Take Reading";
+    btn.disabled = false; btn.textContent = "Get Prediction";
   }
 }
-
-
-/* =========================================================
-   5. LOAD BABY PROFILE + READING HISTORY
-   ========================================================= */
-
+                       
+// --- history page ---
 async function loadHistory(){
+  const code = document.getElementById('historySearch').value.trim();
+  const results = document.getElementById('historyResults');
+  results.innerHTML = `<div class="empty-state">Loading...</div>`;
 
-  const code =
-    document
-      .getElementById('historySearch')
-      .value
-      .trim();
-
-  const results =
-    document.getElementById('historyResults');
-
-
-  if(!code){
-
-    results.innerHTML =
-      `<div class="empty-state">
-        Enter a Baby ID / Code to search.
-      </div>`;
-
-    return;
-  }
-
-
-  results.innerHTML =
-    `<div class="empty-state">
-      Loading baby profile and reading history...
-    </div>`;
-
+  if(!code){ results.innerHTML = `<div class="empty-state">Enter a baby code to search.</div>`; return; }
 
   try{
-
-    /*
-      Fetch profile and history separately.
-    */
-
-    const [
-      babyResponse,
-      historyResponse
-    ] =
-      await Promise.all([
-
-        fetch(
-          API_ENDPOINTS.GET_BABY(code)
-        ),
-
-        fetch(
-          API_ENDPOINTS.GET_HISTORY(code)
-        )
-      ]);
-
-
-    if(babyResponse.status === 404){
-
-      results.innerHTML =
-        `<div class="empty-state">
-          No baby found with code "${escapeHtml(code)}".
-        </div>`;
-
+    const res = await fetch(`${API_BASE}/babies/${encodeURIComponent(code)}/readings`);
+    if(res.status === 404){
+      results.innerHTML = `<div class="empty-state">No baby found with code "${code}".</div>`;
       return;
     }
-
-
-    if(!babyResponse.ok){
-
-      throw new Error(
-        await getErrorMessage(babyResponse)
-      );
-    }
-
-
-    const baby =
-      await babyResponse.json();
-
-
-    if(
-      !historyResponse.ok &&
-      historyResponse.status !== 404
-    ){
-
-      throw new Error(
-        await getErrorMessage(historyResponse)
-      );
-    }
-
-
-    let historyData = [];
-
-    if(historyResponse.ok){
-
-      historyData =
-        await historyResponse.json();
-    }
-
-
-    /*
-      Support both:
-      GET response = [reading, reading]
-      and
-      GET response = { readings: [...] }
-    */
-
-    let readings =
-      Array.isArray(historyData)
-        ? historyData
-        : (
-            historyData.readings ||
-            historyData.items ||
-            []
-          );
-
-
-    /*
-      Newest reading first.
-    */
-
-    readings =
-      [...readings]
-      .sort((a, b) => {
-
-        const timeA =
-          new Date(
-            a.created_at ||
-            a.reading_timestamp ||
-            0
-          ).getTime();
-
-        const timeB =
-          new Date(
-            b.created_at ||
-            b.reading_timestamp ||
-            0
-          ).getTime();
-
-        return timeB - timeA;
-      });
-
-
-    const profileHtml = `
-      <div class="profile-card">
-        <h3>Baby Profile</h3>
-
-        <div class="profile-details">
-
-          <div>
-            <strong>Baby ID</strong>
-            ${escapeHtml(
-              baby.baby_code ||
-              baby.baby_id ||
-              code
-            )}
-          </div>
-
-          <div>
-            <strong>Sex</strong>
-            ${escapeHtml(
-              baby.sex ?? "--"
-            )}
-          </div>
-
-          <div>
-            <strong>Gestational Age</strong>
-            ${escapeHtml(
-              baby.gestational_age_weeks ?? "--"
-            )} weeks
-          </div>
-
-          <div>
-            <strong>Skin Tone Category</strong>
-            ${escapeHtml(
-              baby.skin_tone_category ?? "--"
-            )}
-          </div>
-
-        </div>
-      </div>
-    `;
-
+    if(!res.ok) throw new Error("Request failed");
+    const readings = await res.json();
 
     if(readings.length === 0){
-
-      results.innerHTML =
-        profileHtml +
-        `
-        <div class="empty-state">
-          No readings recorded yet for
-          ${escapeHtml(code)}.
-        </div>
-        `;
-
+      results.innerHTML = `<div class="empty-state">No readings recorded yet for ${code}.</div>`;
       return;
     }
 
+    let rows = readings.map(r => `
+      <tr>
+        <td>${r.age_hours}h</td>
+        <td>${r.predicted_bilirubin_mg_dl} mg/dL</td>
+        <td>${r.red} / ${r.green} / ${r.blue} / ${r.clear}</td>
+        <td>${new Date(r.created_at).toLocaleString()}</td>
+      </tr>`).join('');
 
-    const rows =
-      readings.map((reading, index) => {
-
-        const r =
-          normalizeReadingResponse(reading);
-
-        const timestamp =
-          r.created_at
-            ? new Date(
-                r.created_at
-              ).toLocaleString()
-            : "--";
-
-        const bilirubin =
-          r.predicted_bilirubin_mg_dl !== null
-            ? `${r.predicted_bilirubin_mg_dl} mg/dL`
-            : "--";
-
-        const newestLabel =
-          index === 0
-            ? `<span style="
-                font-size:10px;
-                color:#0B4F4A;
-                font-weight:600;
-              ">NEWEST</span>`
-            : "";
-
-        return `
-          <tr>
-
-            <td>
-              ${r.age_hours}h
-              ${newestLabel}
-            </td>
-
-            <td>
-              ${bilirubin}
-            </td>
-
-            <td>
-              ${r.red}
-            </td>
-
-            <td>
-              ${r.green}
-            </td>
-
-            <td>
-              ${r.blue}
-            </td>
-
-            <td>
-              ${r.clear}
-            </td>
-
-            <td>
-              ${timestamp}
-            </td>
-
-          </tr>
-        `;
-
-      }).join("");
-
-
-    results.innerHTML =
-      profileHtml +
-      `
-      <div class="section-label">
-        Reading History
-      </div>
-
+    results.innerHTML = `
       <table>
+        <thead><tr><th>Age</th><th>Bilirubin</th><th>R / G / B / C</th><th>Recorded</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
 
-        <thead>
-          <tr>
-            <th>Age</th>
-            <th>TSB</th>
-            <th>Red</th>
-            <th>Green</th>
-            <th>Blue</th>
-            <th>Clear</th>
-            <th>Recorded</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          ${rows}
-        </tbody>
-
-      </table>
-      `;
-
-
-  }catch(error){
-
-    results.innerHTML =
-      `
-      <div class="empty-state">
-        Couldn't load the baby's history.<br>
-        ${escapeHtml(error.message)}
-      </div>
-      `;
+  }catch(e){
+    results.innerHTML = `<div class="empty-state">Couldn't reach the backend — make sure it's running on ${API_BASE}.</div>`;
   }
 }
-
-
-/* =========================================================
-   SAFE HTML OUTPUT
-   ========================================================= */
-
-function escapeHtml(value){
-
-  if(
-    value === null ||
-    value === undefined
-  ){
-    return "--";
-  }
-
-  return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
-
-/* =========================================================
-   BABY ID CHANGE HANDLER
-
-   If the user enters another Baby ID, clear the currently
-   selected baby so the next action checks the backend again.
-   ========================================================= */
-
-document
-  .getElementById('baby_code')
-  .addEventListener('input', () => {
-
-    selectedBaby = null;
-
-    hideProfileStatus();
-  });
-
-
-/* =========================================================
-   OPTIONAL: PRESS ENTER ON HISTORY SEARCH
-   ========================================================= */
-
-document
-  .getElementById('historySearch')
-  .addEventListener('keydown', event => {
-
-    if(event.key === "Enter"){
-      loadHistory();
-    }
-  });
-
 </script>
 
 </body>
