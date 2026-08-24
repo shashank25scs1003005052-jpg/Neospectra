@@ -3,389 +3,2493 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NeoScan — Jaundice Reading Console</title>
+
+<title>NeoScan — Neonatal Jaundice Screening</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
 <style>
-  :root{
-    --bg: #F5F7F7;
-    --panel: #FFFFFF;
-    --ink: #10201D;
-    --ink-soft: #5B6D69;
-    --teal: #0B4F4A;
-    --teal-deep: #073531;
-    --amber: #C9821E;
-    --line: #E1E7E6;
-    --mono: 'IBM Plex Mono', monospace;
-    --display: 'Space Grotesk', sans-serif;
-    --body: 'Inter', sans-serif;
-  }
-  *{box-sizing:border-box;}
-  body{
-    margin:0; background:var(--bg); color:var(--ink);
-    font-family:var(--body);
-  }
-  header{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:20px 32px; border-bottom:1px solid var(--line); background:var(--panel);
-  }
-  .brand{ display:flex; align-items:center; gap:10px; }
-  .brand-mark{
-    width:30px; height:30px; border-radius:7px; background:var(--teal-deep);
-    display:flex; align-items:center; justify-content:center;
-  }
-  .brand-mark span{ width:10px; height:10px; border-radius:50%; background:#5FE0C6; }
-  .brand-name{ font-family:var(--display); font-weight:700; font-size:18px; letter-spacing:-0.01em; }
-  nav{ display:flex; gap:4px; background:var(--bg); padding:4px; border-radius:10px; }
-  nav button{
-    font-family:var(--body); font-weight:600; font-size:14px; color:var(--ink-soft);
-    background:none; border:none; padding:8px 16px; border-radius:7px; cursor:pointer;
-  }
-  nav button.active{ background:var(--panel); color:var(--teal-deep); box-shadow:0 1px 2px rgba(0,0,0,.08); }
+:root{
+  --bg:#eef3f2;
+  --panel:#ffffff;
+  --panel-soft:#f7faf9;
 
-  main{ max-width:760px; margin:0 auto; padding:48px 24px 80px; }
-  .page{ display:none; }
-  .page.active{ display:block; }
+  --ink:#10201d;
+  --muted:#667773;
 
-  .eyebrow{ font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--teal); margin-bottom:8px;}
-  h1{ font-family:var(--display); font-size:32px; margin:0 0 8px; letter-spacing:-0.01em; }
-  .sub{ color:var(--ink-soft); font-size:15px; margin-bottom:32px; max-width:52ch; line-height:1.5;}
+  --teal:#0b5c56;
+  --teal-dark:#073b37;
+  --teal-soft:#dff3ef;
 
-  .grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-  .field{ display:flex; flex-direction:column; gap:6px; }
-  .field.full{ grid-column:1 / -1; }
-  label{ font-size:12px; font-weight:600; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em; }
-  input, select{
-    font-family:var(--mono); font-size:15px; padding:11px 12px;
-    border:1px solid var(--line); border-radius:8px; background:var(--panel); color:var(--ink);
+  --cyan:#35c7b0;
+  --cyan-soft:#e8faf6;
+
+  --amber:#c98524;
+  --amber-soft:#fff4df;
+
+  --red:#b64b4b;
+  --red-soft:#fceeee;
+
+  --line:#dce6e4;
+  --shadow:0 12px 35px rgba(14,45,41,.07);
+
+  --display:'Space Grotesk',sans-serif;
+  --body:'DM Sans',sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--body);
+}
+
+/* =========================
+   HEADER
+========================= */
+
+header{
+  height:76px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  padding:0 34px;
+
+  background:rgba(255,255,255,.94);
+  border-bottom:1px solid var(--line);
+
+  position:sticky;
+  top:0;
+  z-index:100;
+
+  backdrop-filter:blur(14px);
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.brand-mark{
+  width:38px;
+  height:38px;
+  border-radius:11px;
+
+  background:var(--teal-dark);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  box-shadow:0 6px 16px rgba(7,59,55,.18);
+}
+
+.brand-mark-inner{
+  width:17px;
+  height:17px;
+  border:2px solid #65dfcb;
+  border-radius:50%;
+  position:relative;
+}
+
+.brand-mark-inner:after{
+  content:"";
+  position:absolute;
+  width:5px;
+  height:5px;
+  background:#65dfcb;
+  border-radius:50%;
+  top:4px;
+  left:4px;
+}
+
+.brand-name{
+  font-family:var(--display);
+  font-size:20px;
+  font-weight:700;
+  letter-spacing:-.03em;
+}
+
+.brand-tag{
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:.08em;
+  color:var(--muted);
+  text-transform:uppercase;
+  margin-top:2px;
+}
+
+.brand-text{
+  display:flex;
+  flex-direction:column;
+}
+
+/* NAV */
+
+nav{
+  display:flex;
+  gap:4px;
+
+  padding:5px;
+
+  background:#edf3f2;
+  border:1px solid var(--line);
+  border-radius:12px;
+}
+
+nav button{
+  border:0;
+  background:transparent;
+
+  padding:9px 17px;
+
+  border-radius:8px;
+
+  font-family:var(--body);
+  font-size:13px;
+  font-weight:600;
+
+  color:var(--muted);
+
+  cursor:pointer;
+
+  transition:.2s;
+}
+
+nav button:hover{
+  color:var(--teal-dark);
+}
+
+nav button.active{
+  background:white;
+  color:var(--teal-dark);
+
+  box-shadow:
+    0 2px 5px rgba(0,0,0,.06),
+    0 0 0 1px rgba(0,0,0,.03);
+}
+
+/* DEVICE STATUS */
+
+.device-status{
+  display:flex;
+  align-items:center;
+  gap:8px;
+
+  font-family:var(--mono);
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.07em;
+
+  color:var(--muted);
+}
+
+.status-dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#39b89f;
+  box-shadow:0 0 0 4px rgba(57,184,159,.12);
+}
+
+/* =========================
+   MAIN
+========================= */
+
+main{
+  max-width:1120px;
+  margin:auto;
+
+  padding:42px 28px 80px;
+}
+
+.page{
+  display:none;
+}
+
+.page.active{
+  display:block;
+}
+
+/* =========================
+   COMMON
+========================= */
+
+.eyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+
+  font-family:var(--mono);
+  font-size:10px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+
+  color:var(--teal);
+
+  margin-bottom:10px;
+}
+
+.eyebrow:before{
+  content:"";
+  width:6px;
+  height:6px;
+  background:var(--cyan);
+  border-radius:50%;
+}
+
+h1{
+  font-family:var(--display);
+  font-size:38px;
+  line-height:1.08;
+
+  letter-spacing:-.045em;
+
+  margin:0 0 10px;
+}
+
+.sub{
+  max-width:650px;
+
+  margin:0 0 34px;
+
+  color:var(--muted);
+
+  font-size:15px;
+  line-height:1.65;
+}
+
+/* =========================
+   HOME
+========================= */
+
+.home-hero{
+  background:var(--teal-dark);
+  color:white;
+
+  border-radius:20px;
+
+  padding:38px;
+
+  position:relative;
+  overflow:hidden;
+
+  box-shadow:var(--shadow);
+}
+
+.home-hero:before{
+  content:"";
+  position:absolute;
+
+  width:330px;
+  height:330px;
+
+  border:1px solid rgba(109,220,202,.16);
+  border-radius:50%;
+
+  right:-100px;
+  top:-150px;
+}
+
+.home-hero:after{
+  content:"";
+  position:absolute;
+
+  width:210px;
+  height:210px;
+
+  border:1px solid rgba(109,220,202,.12);
+  border-radius:50%;
+
+  right:10px;
+  top:-60px;
+}
+
+.hero-grid{
+  position:relative;
+  z-index:2;
+
+  display:grid;
+  grid-template-columns:1.5fr .7fr;
+
+  gap:35px;
+  align-items:center;
+}
+
+.hero-label{
+  font-family:var(--mono);
+  font-size:10px;
+
+  color:#86dacc;
+
+  letter-spacing:.12em;
+  text-transform:uppercase;
+
+  margin-bottom:14px;
+}
+
+.home-hero h1{
+  max-width:650px;
+  font-size:42px;
+  margin-bottom:15px;
+}
+
+.hero-description{
+  color:#b7cfca;
+  max-width:600px;
+  line-height:1.6;
+  font-size:14px;
+}
+
+/* DEVICE VISUAL */
+
+.device-visual{
+  display:flex;
+  justify-content:center;
+}
+
+.device-circle{
+  width:190px;
+  height:190px;
+
+  border-radius:50%;
+
+  border:1px solid rgba(101,223,203,.35);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  position:relative;
+}
+
+.device-circle:before,
+.device-circle:after{
+  content:"";
+  position:absolute;
+
+  border-radius:50%;
+
+  border:1px solid rgba(101,223,203,.2);
+}
+
+.device-circle:before{
+  inset:16px;
+}
+
+.device-circle:after{
+  inset:34px;
+}
+
+.device-core{
+  width:62px;
+  height:62px;
+
+  border-radius:50%;
+
+  background:#5fe0c6;
+
+  box-shadow:
+    0 0 0 12px rgba(95,224,198,.1),
+    0 0 35px rgba(95,224,198,.3);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.device-core span{
+  width:17px;
+  height:17px;
+
+  background:var(--teal-dark);
+  border-radius:50%;
+}
+
+/* HOME STATS */
+
+.home-stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+
+  margin-top:18px;
+}
+
+.stat-card{
+  background:white;
+  border:1px solid var(--line);
+
+  border-radius:14px;
+
+  padding:20px;
+
+  box-shadow:0 5px 18px rgba(10,40,36,.035);
+}
+
+.stat-label{
+  font-family:var(--mono);
+  font-size:10px;
+  color:var(--muted);
+
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+
+.stat-value{
+  font-family:var(--display);
+  font-size:24px;
+  font-weight:700;
+
+  margin-top:8px;
+}
+
+.stat-description{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:3px;
+}
+
+/* HOME ACTIONS */
+
+.home-section-title{
+  margin-top:36px;
+  margin-bottom:14px;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+}
+
+.home-section-title h2{
+  font-family:var(--display);
+  font-size:20px;
+  margin:0;
+}
+
+.home-section-title span{
+  font-family:var(--mono);
+  font-size:10px;
+  color:var(--muted);
+}
+
+.home-cards{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+
+.home-card{
+  background:white;
+
+  border:1px solid var(--line);
+
+  border-radius:16px;
+
+  padding:24px;
+
+  cursor:pointer;
+
+  transition:.2s;
+
+  position:relative;
+  overflow:hidden;
+}
+
+.home-card:hover{
+  border-color:#9bcfc7;
+  transform:translateY(-2px);
+  box-shadow:var(--shadow);
+}
+
+.card-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  margin-bottom:22px;
+}
+
+.card-icon{
+  width:42px;
+  height:42px;
+
+  border-radius:11px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  background:var(--teal-soft);
+  color:var(--teal);
+
+  font-family:var(--mono);
+  font-weight:600;
+}
+
+.card-number{
+  font-family:var(--mono);
+  font-size:10px;
+  color:#9aa9a6;
+}
+
+.home-card h3{
+  font-family:var(--display);
+  font-size:19px;
+  margin:0 0 7px;
+}
+
+.home-card p{
+  margin:0;
+
+  font-size:13px;
+  line-height:1.55;
+
+  color:var(--muted);
+}
+
+.card-arrow{
+  margin-top:20px;
+
+  font-family:var(--mono);
+  font-size:11px;
+
+  color:var(--teal);
+}
+
+/* =========================
+   SECTION HEADER
+========================= */
+
+.page-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:30px;
+}
+
+.header-status{
+  padding:9px 12px;
+
+  border:1px solid var(--line);
+  background:white;
+
+  border-radius:9px;
+
+  font-family:var(--mono);
+  font-size:10px;
+
+  color:var(--muted);
+
+  white-space:nowrap;
+}
+
+.header-status span{
+  color:#2d9c88;
+}
+
+/* =========================
+   READING LAYOUT
+========================= */
+
+.reading-layout{
+  display:grid;
+  grid-template-columns:1.45fr .75fr;
+  gap:18px;
+}
+
+.panel{
+  background:white;
+
+  border:1px solid var(--line);
+
+  border-radius:16px;
+
+  box-shadow:0 5px 20px rgba(10,40,36,.035);
+}
+
+.panel-header{
+  padding:20px 22px;
+
+  border-bottom:1px solid var(--line);
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.panel-title{
+  font-family:var(--display);
+  font-weight:700;
+  font-size:15px;
+}
+
+.panel-code{
+  font-family:var(--mono);
+  font-size:9px;
+
+  color:var(--muted);
+
+  letter-spacing:.08em;
+}
+
+.panel-body{
+  padding:22px;
+}
+
+/* FORM */
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+
+.field.full{
+  grid-column:1/-1;
+}
+
+label{
+  font-family:var(--mono);
+
+  font-size:10px;
+
+  font-weight:500;
+
+  color:var(--muted);
+
+  text-transform:uppercase;
+
+  letter-spacing:.07em;
+}
+
+input,
+select{
+  width:100%;
+
+  font-family:var(--mono);
+
+  font-size:13px;
+
+  padding:12px 13px;
+
+  border:1px solid var(--line);
+
+  border-radius:9px;
+
+  background:#fbfdfc;
+
+  color:var(--ink);
+
+  transition:.2s;
+}
+
+input:hover,
+select:hover{
+  border-color:#b9cbc8;
+}
+
+input:focus,
+select:focus{
+  outline:none;
+
+  border-color:var(--teal);
+
+  box-shadow:0 0 0 3px rgba(11,92,86,.08);
+
+  background:white;
+}
+
+/* PROFILE SECTION */
+
+.section-label{
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  margin:26px 0 15px;
+
+  font-family:var(--mono);
+
+  font-size:10px;
+
+  text-transform:uppercase;
+
+  letter-spacing:.1em;
+
+  color:var(--teal);
+}
+
+.section-label:after{
+  content:"";
+  height:1px;
+  background:var(--line);
+  flex:1;
+}
+
+/* SENSOR */
+
+.sensor-panel{
+  margin-top:18px;
+
+  background:#f8fbfa;
+
+  border:1px solid var(--line);
+
+  border-radius:12px;
+
+  padding:18px;
+}
+
+.sensor-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  margin-bottom:15px;
+}
+
+.sensor-title strong{
+  font-family:var(--display);
+  font-size:13px;
+}
+
+.sensor-state{
+  display:flex;
+  align-items:center;
+  gap:6px;
+
+  font-family:var(--mono);
+  font-size:9px;
+
+  color:#338d7d;
+}
+
+.sensor-state .status-dot{
+  width:6px;
+  height:6px;
+}
+
+/* BUTTON */
+
+.submit-btn{
+  margin-top:20px;
+
+  width:100%;
+
+  padding:14px 18px;
+
+  border:none;
+
+  border-radius:10px;
+
+  background:var(--teal-dark);
+
+  color:white;
+
+  font-family:var(--display);
+
+  font-weight:600;
+
+  font-size:14px;
+
+  cursor:pointer;
+
+  transition:.2s;
+
+  box-shadow:0 7px 18px rgba(7,59,55,.15);
+}
+
+.submit-btn:hover{
+  background:var(--teal);
+  transform:translateY(-1px);
+}
+
+.submit-btn:disabled{
+  opacity:.55;
+  cursor:default;
+  transform:none;
+}
+
+/* =========================
+   SIDE DEVICE CARD
+========================= */
+
+.device-panel{
+  height:max-content;
+  background:var(--teal-dark);
+
+  color:white;
+
+  border-radius:16px;
+
+  padding:22px;
+
+  box-shadow:var(--shadow);
+}
+
+.device-panel-label{
+  font-family:var(--mono);
+  font-size:9px;
+
+  color:#83d5c7;
+
+  text-transform:uppercase;
+  letter-spacing:.1em;
+}
+
+.device-panel h3{
+  font-family:var(--display);
+
+  font-size:20px;
+
+  margin:8px 0 6px;
+}
+
+.device-panel-description{
+  color:#a9c5c0;
+
+  font-size:12px;
+
+  line-height:1.55;
+
+  margin-bottom:25px;
+}
+
+.device-mini{
+  height:170px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  background:
+    radial-gradient(circle at center,
+    rgba(95,224,198,.11),
+    transparent 58%);
+
+  border:1px solid rgba(134,213,199,.12);
+
+  border-radius:12px;
+
+  margin-bottom:18px;
+}
+
+.mini-ring{
+  width:105px;
+  height:105px;
+
+  border-radius:50%;
+
+  border:1px solid rgba(95,224,198,.45);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  position:relative;
+}
+
+.mini-ring:before{
+  content:"";
+
+  position:absolute;
+
+  inset:12px;
+
+  border-radius:50%;
+
+  border:1px dashed rgba(95,224,198,.25);
+}
+
+.mini-core{
+  width:34px;
+  height:34px;
+
+  border-radius:50%;
+
+  background:#5fe0c6;
+
+  box-shadow:0 0 22px rgba(95,224,198,.3);
+}
+
+.device-info{
+  border-top:1px solid rgba(255,255,255,.1);
+
+  padding-top:16px;
+}
+
+.device-info-row{
+  display:flex;
+  justify-content:space-between;
+
+  padding:7px 0;
+
+  font-family:var(--mono);
+  font-size:9px;
+
+  color:#9dbab5;
+}
+
+.device-info-row strong{
+  color:#d3e7e3;
+  font-weight:500;
+}
+
+/* =========================
+   READOUT
+========================= */
+
+.readout{
+  margin-top:18px;
+
+  background:var(--teal-dark);
+
+  border-radius:16px;
+
+  padding:25px;
+
+  display:none;
+
+  box-shadow:0 12px 30px rgba(7,59,55,.13);
+}
+
+.readout.show{
+  display:block;
+}
+
+.readout-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:start;
+}
+
+.readout-label{
+  font-family:var(--mono);
+
+  font-size:9px;
+
+  color:#8fd6c7;
+
+  text-transform:uppercase;
+
+  letter-spacing:.1em;
+
+  margin-bottom:8px;
+}
+
+.result-status{
+  padding:6px 9px;
+
+  border:1px solid rgba(95,224,198,.2);
+
+  background:rgba(95,224,198,.07);
+
+  border-radius:7px;
+
+  color:#7fd9c9;
+
+  font-family:var(--mono);
+
+  font-size:9px;
+
+  text-transform:uppercase;
+}
+
+.readout-value{
+  font-family:var(--mono);
+
+  font-size:52px;
+
+  color:#5fe0c6;
+
+  font-weight:600;
+
+  line-height:1;
+}
+
+.readout-unit{
+  font-family:var(--mono);
+
+  font-size:14px;
+
+  color:#8fd6c7;
+
+  margin-left:9px;
+}
+
+.readout-meta{
+  margin-top:18px;
+
+  display:flex;
+  flex-wrap:wrap;
+  gap:25px;
+
+  font-family:var(--mono);
+
+  font-size:10px;
+
+  color:#b7d8d1;
+}
+
+.readout-meta span{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.readout-meta span:before{
+  content:"";
+  width:5px;
+  height:5px;
+  background:#5fe0c6;
+  border-radius:50%;
+}
+
+/* =========================
+   ERROR
+========================= */
+
+.error-box{
+  margin-top:18px;
+
+  padding:13px 15px;
+
+  background:var(--red-soft);
+
+  border:1px solid #e7bebe;
+
+  border-radius:9px;
+
+  color:#8d3333;
+
+  font-size:12px;
+
+  display:none;
+}
+
+.error-box.show{
+  display:block;
+}
+
+/* =========================
+   HISTORY
+========================= */
+
+.history-toolbar{
+  background:white;
+
+  border:1px solid var(--line);
+
+  border-radius:14px;
+
+  padding:16px;
+
+  display:flex;
+  gap:10px;
+
+  margin-bottom:18px;
+}
+
+.history-toolbar input{
+  flex:1;
+}
+
+.history-search-btn{
+  font-family:var(--body);
+
+  font-weight:600;
+
+  padding:0 22px;
+
+  border-radius:9px;
+
+  border:1px solid var(--teal);
+
+  background:var(--teal);
+
+  color:white;
+
+  cursor:pointer;
+}
+
+.history-search-btn:hover{
+  background:var(--teal-dark);
+}
+
+.history-info{
+  display:flex;
+
+  align-items:center;
+  justify-content:space-between;
+
+  margin-bottom:12px;
+}
+
+.history-info-title{
+  font-family:var(--display);
+  font-size:15px;
+  font-weight:700;
+}
+
+.history-info-code{
+  font-family:var(--mono);
+  font-size:10px;
+  color:var(--teal);
+}
+
+.history-table-wrap{
+  background:white;
+
+  border:1px solid var(--line);
+
+  border-radius:14px;
+
+  overflow:hidden;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th{
+  text-align:left;
+
+  font-family:var(--mono);
+
+  font-size:9px;
+
+  text-transform:uppercase;
+
+  letter-spacing:.08em;
+
+  color:var(--muted);
+
+  padding:13px 15px;
+
+  background:#f7faf9;
+
+  border-bottom:1px solid var(--line);
+}
+
+td{
+  padding:14px 15px;
+
+  font-family:var(--mono);
+
+  font-size:11px;
+
+  border-bottom:1px solid var(--line);
+}
+
+tr:last-child td{
+  border-bottom:0;
+}
+
+tr:hover td{
+  background:#fbfdfc;
+}
+
+.bilirubin-value{
+  color:var(--teal);
+
+  font-weight:600;
+}
+
+.sensor-values{
+  color:var(--muted);
+}
+
+/* EMPTY */
+
+.empty-state{
+  text-align:center;
+
+  padding:55px 20px;
+
+  color:var(--muted);
+
+  font-size:13px;
+}
+
+.empty-icon{
+  width:42px;
+  height:42px;
+
+  margin:0 auto 13px;
+
+  border-radius:50%;
+
+  background:var(--teal-soft);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  color:var(--teal);
+
+  font-family:var(--mono);
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.console-footer{
+  margin-top:42px;
+
+  display:flex;
+
+  justify-content:space-between;
+
+  border-top:1px solid var(--line);
+
+  padding-top:16px;
+
+  color:#879692;
+
+  font-family:var(--mono);
+
+  font-size:9px;
+
+  text-transform:uppercase;
+
+  letter-spacing:.05em;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:900px){
+
+  .hero-grid,
+  .reading-layout{
+    grid-template-columns:1fr;
   }
-  input:focus, select:focus{ outline:2px solid var(--teal); outline-offset:1px; }
 
-  .section-label{ font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-soft); margin:28px 0 12px; padding-top:20px; border-top:1px solid var(--line);}
-
-  .submit-btn{
-    margin-top:28px; width:100%; padding:14px; border:none; border-radius:9px;
-    background:var(--teal-deep); color:#fff; font-family:var(--display); font-weight:600; font-size:15px;
-    cursor:pointer;
-  }
-  .submit-btn:hover{ background:var(--teal); }
-  .submit-btn:disabled{ opacity:.5; cursor:default; }
-
-  .readout{
-    margin-top:28px; background:var(--teal-deep); border-radius:14px; padding:28px;
+  .device-panel{
     display:none;
   }
-  .readout.show{ display:block; }
-  .readout-label{ font-family:var(--mono); font-size:11px; color:#8FD6C7; text-transform:uppercase; letter-spacing:.1em; margin-bottom:6px;}
-  .readout-value{ font-family:var(--mono); font-size:52px; color:#5FE0C6; font-weight:600; line-height:1; }
-  .readout-unit{ font-family:var(--mono); font-size:16px; color:#8FD6C7; margin-left:8px;}
-  .readout-meta{ margin-top:14px; display:flex; gap:20px; font-family:var(--mono); font-size:12px; color:#B7D8D1; }
 
-  .error-box{
-    margin-top:20px; padding:14px 16px; background:#FBECEC; border:1px solid #E8B4B4;
-    border-radius:8px; color:#8A2A2A; font-size:14px; display:none;
+}
+
+@media(max-width:700px){
+
+  header{
+    padding:0 16px;
   }
-  .error-box.show{ display:block; }
 
-  table{ width:100%; border-collapse:collapse; margin-top:10px; }
-  th{ text-align:left; font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft); padding:10px 12px; border-bottom:1px solid var(--line); }
-  td{ padding:12px; font-family:var(--mono); font-size:13.5px; border-bottom:1px solid var(--line); }
-  tr:hover td{ background:#FAFBFB; }
-
-  .history-search{ display:flex; gap:10px; margin-bottom:20px; }
-  .history-search input{ flex:1; }
-  .history-search button{
-    font-family:var(--body); font-weight:600; padding:11px 20px; border-radius:8px;
-    border:1px solid var(--teal-deep); background:var(--panel); color:var(--teal-deep); cursor:pointer;
+  .brand-tag,
+  .device-status{
+    display:none;
   }
-  .empty-state{ text-align:center; padding:48px 0; color:var(--ink-soft); font-size:14px; }
 
-  .home-cards{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:32px; }
-  .home-card{ background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:22px; cursor:pointer; }
-  .home-card:hover{ border-color:var(--teal); }
-  .home-card .num{ font-family:var(--mono); font-size:12px; color:var(--teal); margin-bottom:8px;}
-  .home-card h3{ font-family:var(--display); font-size:17px; margin:0 0 6px; }
-  .home-card p{ font-size:13.5px; color:var(--ink-soft); margin:0; line-height:1.5;}
+  nav button{
+    padding:8px 10px;
+    font-size:11px;
+  }
 
-  .status-dot{ display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; }
+  main{
+    padding:28px 16px 60px;
+  }
 
-  @media (max-width:600px){ .grid, .home-cards{ grid-template-columns:1fr; } }
+  h1,
+  .home-hero h1{
+    font-size:30px;
+  }
+
+  .home-hero{
+    padding:26px;
+  }
+
+  .device-visual{
+    display:none;
+  }
+
+  .home-stats{
+    grid-template-columns:1fr;
+  }
+
+  .home-cards{
+    grid-template-columns:1fr;
+  }
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .field.full{
+    grid-column:auto;
+  }
+
+  .history-toolbar{
+    flex-direction:column;
+  }
+
+  .history-search-btn{
+    padding:12px;
+  }
+
+  .history-table-wrap{
+    overflow-x:auto;
+  }
+
+  table{
+    min-width:650px;
+  }
+
+  .page-header{
+    flex-direction:column;
+  }
+
+  .console-footer{
+    flex-direction:column;
+    gap:8px;
+  }
+}
 </style>
 </head>
+
 <body>
 
+<!-- =========================
+     HEADER
+========================= -->
+
 <header>
+
   <div class="brand">
-    <div class="brand-mark"><span></span></div>
-    <div class="brand-name">NeoScan</div>
+
+    <div class="brand-mark">
+      <div class="brand-mark-inner"></div>
+    </div>
+
+    <div class="brand-text">
+      <div class="brand-name">NeoScan</div>
+      <div class="brand-tag">Neonatal Screening Console</div>
+    </div>
+
   </div>
+
+  <div class="device-status">
+    <span class="status-dot"></span>
+    System Ready
+  </div>
+
   <nav>
-    <button data-page="home" class="active">Home</button>
-    <button data-page="profile">Baby Profile</button>
-    <button data-page="predict">New Reading</button>
-    <button data-page="history">History</button>
+
+    <button data-page="home" class="active">
+      Overview
+    </button>
+
+    <button data-page="predict">
+      New Reading
+    </button>
+
+    <button data-page="history">
+      History
+    </button>
+
   </nav>
+
 </header>
+
 
 <main>
 
-  <!-- HOME -->
-  <section class="page active" id="page-home">
-    <div class="eyebrow">Bilirubin Screening Console</div>
-    <h1>Neonatal jaundice, read at the bedside.</h1>
-    <p class="sub">Enter a sensor reading manually or from device input, get an instant bilirubin estimate, and track how each baby trends over their first days.</p>
-    <div class="home-cards">
-      <div class="home-card" onclick="goTo('predict')">
-        <div class="num">01</div>
-        <h3>Take a reading</h3>
-        <p>Enter baby details and sensor values to generate a bilirubin estimate.</p>
+<!-- =====================================================
+     HOME
+===================================================== -->
+
+<section class="page active" id="page-home">
+
+  <div class="home-hero">
+
+    <div class="hero-grid">
+
+      <div>
+
+        <div class="hero-label">
+          NEONATAL JAUNDICE SCREENING / NS-01
+        </div>
+
+        <h1>
+          Bedside bilirubin screening,
+          simplified.
+        </h1>
+
+        <p class="hero-description">
+          NeoScan provides a structured clinical workflow for
+          recording neonatal information, receiving sensor readings,
+          and monitoring bilirubin measurements over time.
+        </p>
+
       </div>
-      <div class="home-card" onclick="goTo('history')">
-        <div class="num">02</div>
-        <h3>View history</h3>
-        <p>Look up a baby by code and see every reading recorded so far.</p>
+
+      <div class="device-visual">
+
+        <div class="device-circle">
+
+          <div class="device-core">
+            <span></span>
+          </div>
+
+        </div>
+
       </div>
-    </div>
-  </section>
 
-
-  <section class="page" id="page-profile">
-    <div class="eyebrow">Baby Profile</div>
-    <h1>Create baby profile</h1>
-    <p class="sub">Enter the baby's information once. The backend stores it and uses it for later readings.</p>
-    <div class="grid">
-      <div class="field"><label>Baby Code</label><input id="profile_baby_code" placeholder="BABY_001"></div>
-      <div class="field"><label>Sex</label><select id="profile_sex"><option value="F">F</option><option value="M">M</option></select></div>
-      <div class="field"><label>Gestational Age (weeks)</label><input id="profile_gest" type="number" min="24" max="45" step="0.1" placeholder="38"></div>
-      <div class="field"><label>Skin Tone Category</label><input id="profile_skin" type="number" min="1" max="5" placeholder="1 - 5"></div>
-    </div>
-    <button class="submit-btn" id="profileBtn" onclick="createProfile()">Save Baby Profile</button>
-    <div class="error-box" id="profileError"></div>
-    <div class="readout" id="profileSuccess">
-      <div class="readout-label">Profile saved</div>
-      <div style="font-family:var(--display);font-size:20px;color:#fff;font-weight:600;">Baby profile is ready for readings.</div>
-      <div class="readout-meta"><span id="profileSavedCode"></span></div>
-    </div>
-  </section>
-
-  <!-- PREDICT -->
-  <section class="page" id="page-predict">
-    <div class="eyebrow">New Reading</div>
-    <h1>Enter reading details</h1>
-    <p class="sub">All fields required. Sensor values can be typed manually for now or filled by device input later.</p>
-
-    <div class="grid">
-      <div class="field full"><label>Baby Code</label><input id="baby_code" placeholder="Enter an existing baby code"></div>
-      <div class="field full"><label>Age at Reading (hours)</label><input id="age" type="number" min="0" step="0.01" placeholder="e.g. 48"></div>
-    </div>
-    <div class="section-label">Saved Profile</div>
-    <p class="sub" style="margin-bottom:0;">Sex, gestational age and skin tone come from the saved baby profile. They are not entered again for each reading.</p>
-
-    <div class="section-label">Sensor Values</div>
-    <div class="grid">
-      <div class="field"><label>Red</label><input id="red" type="number" value="682"></div>
-      <div class="field"><label>Green</label><input id="green" type="number" value="524"></div>
-      <div class="field"><label>Blue</label><input id="blue" type="number" value="403"></div>
-      <div class="field"><label>Clear</label><input id="clear" type="number" value="1626"></div>
     </div>
 
-    <button class="submit-btn" id="submitBtn" onclick="submitReading()">Get Prediction</button>
+  </div>
 
-    <div class="error-box" id="errorBox"></div>
 
-    <div class="readout" id="readout">
-      <div class="readout-label">Predicted Total Serum Bilirubin</div>
-      <div><span class="readout-value" id="readoutValue">--</span><span class="readout-unit">mg/dL</span></div>
-      <div class="readout-meta">
-        <span id="readoutAge"></span>
-        <span id="readoutTime"></span>
+  <!-- SYSTEM STATS -->
+
+  <div class="home-stats">
+
+    <div class="stat-card">
+
+      <div class="stat-label">
+        Screening Mode
       </div>
-    </div>
-  </section>
 
-  <!-- HISTORY -->
-  <section class="page" id="page-history">
-    <div class="eyebrow">Reading History</div>
-    <h1>Look up a baby</h1>
-    <p class="sub">Search by baby code to see every reading recorded so far.</p>
+      <div class="stat-value">
+        Non-Invasive
+      </div>
 
-    <div class="history-search">
-      <input id="historySearch" placeholder="e.g. BABY_001" value="BABY_001">
-      <button onclick="loadHistory()">Search</button>
+      <div class="stat-description">
+        Optical sensor based screening
+      </div>
+
     </div>
 
-    <div id="historyResults"></div>
-  </section>
+
+    <div class="stat-card">
+
+      <div class="stat-label">
+        Measurement
+      </div>
+
+      <div class="stat-value">
+        Bilirubin
+      </div>
+
+      <div class="stat-description">
+        Total serum bilirubin estimate
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-label">
+        Console Status
+      </div>
+
+      <div class="stat-value">
+        Ready
+      </div>
+
+      <div class="stat-description">
+        Device interface available
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- QUICK ACTIONS -->
+
+  <div class="home-section-title">
+
+    <h2>
+      Clinical workflow
+    </h2>
+
+    <span>
+      SELECT AN OPERATION
+    </span>
+
+  </div>
+
+
+  <div class="home-cards">
+
+    <div class="home-card" onclick="goTo('predict')">
+
+      <div class="card-top">
+
+        <div class="card-icon">
+          01
+        </div>
+
+        <div class="card-number">
+          MEASUREMENT
+        </div>
+
+      </div>
+
+      <h3>
+        New Reading
+      </h3>
+
+      <p>
+        Select a baby profile, record the age at measurement,
+        receive sensor values and generate a bilirubin estimate.
+      </p>
+
+      <div class="card-arrow">
+        START MEASUREMENT →
+      </div>
+
+    </div>
+
+
+    <div class="home-card" onclick="goTo('history')">
+
+      <div class="card-top">
+
+        <div class="card-icon">
+          02
+        </div>
+
+        <div class="card-number">
+          RECORDS
+        </div>
+
+      </div>
+
+      <h3>
+        Reading History
+      </h3>
+
+      <p>
+        Search a baby using their unique code and review
+        previously recorded bilirubin measurements.
+      </p>
+
+      <div class="card-arrow">
+        OPEN RECORDS →
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="console-footer">
+
+    <span>
+      NEOSCAN / CLINICAL CONSOLE
+    </span>
+
+    <span>
+      SCREENING WORKFLOW
+    </span>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     NEW READING
+===================================================== -->
+
+<section class="page" id="page-predict">
+
+  <div class="page-header">
+
+    <div>
+
+      <div class="eyebrow">
+        New Measurement
+      </div>
+
+      <h1>
+        Baby profile & reading
+      </h1>
+
+      <p class="sub">
+        Enter the neonatal profile and measurement information.
+        Sensor readings can be received from the connected device.
+      </p>
+
+    </div>
+
+    <div class="header-status">
+      DEVICE <span>● READY</span>
+    </div>
+
+  </div>
+
+
+  <div class="reading-layout">
+
+
+    <!-- LEFT FORM -->
+
+    <div>
+
+      <div class="panel">
+
+        <div class="panel-header">
+
+          <div class="panel-title">
+            Baby Profile
+          </div>
+
+          <div class="panel-code">
+            PROFILE / 01
+          </div>
+
+        </div>
+
+
+        <div class="panel-body">
+
+          <div class="grid">
+
+            <div class="field">
+
+              <label>
+                Baby Code
+              </label>
+
+              <input
+                id="baby_code"
+                value="BABY_001"
+              >
+
+            </div>
+
+
+            <div class="field">
+
+              <label>
+                Sex
+              </label>
+
+              <select id="sex">
+
+                <option value="F">
+                  F
+                </option>
+
+                <option value="M">
+                  M
+                </option>
+
+              </select>
+
+            </div>
+
+
+            <div class="field">
+
+              <label>
+                Gestational Age (weeks)
+              </label>
+
+              <input
+                id="gest"
+                type="number"
+                value="40"
+              >
+
+            </div>
+
+
+            <div class="field">
+
+              <label>
+                Skin Tone Category
+              </label>
+
+              <input
+                id="skin"
+                type="number"
+                value="3"
+              >
+
+            </div>
+
+
+            <div class="field full">
+
+              <label>
+                Age at Reading (hours)
+              </label>
+
+              <input
+                id="age"
+                type="number"
+                value="9"
+              >
+
+            </div>
+
+          </div>
+
+
+          <!-- SENSOR -->
+
+          <div class="section-label">
+            Optical Sensor
+          </div>
+
+
+          <div class="sensor-panel">
+
+            <div class="sensor-title">
+
+              <strong>
+                Sensor Values
+              </strong>
+
+              <div class="sensor-state">
+
+                <span class="status-dot"></span>
+
+                INPUT READY
+
+              </div>
+
+            </div>
+
+
+            <div class="grid">
+
+              <div class="field">
+
+                <label>
+                  Red
+                </label>
+
+                <input
+                  id="red"
+                  type="number"
+                  value="682"
+                >
+
+              </div>
+
+
+              <div class="field">
+
+                <label>
+                  Green
+                </label>
+
+                <input
+                  id="green"
+                  type="number"
+                  value="524"
+                >
+
+              </div>
+
+
+              <div class="field">
+
+                <label>
+                  Blue
+                </label>
+
+                <input
+                  id="blue"
+                  type="number"
+                  value="403"
+                >
+
+              </div>
+
+
+              <div class="field">
+
+                <label>
+                  Clear
+                </label>
+
+                <input
+                  id="clear"
+                  type="number"
+                  value="1626"
+                >
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <button
+            class="submit-btn"
+            id="submitBtn"
+            onclick="submitReading()"
+          >
+            RUN BILIRUBIN MEASUREMENT
+          </button>
+
+
+          <div
+            class="error-box"
+            id="errorBox"
+          ></div>
+
+
+        </div>
+
+      </div>
+
+
+      <!-- RESULT -->
+
+      <div
+        class="readout"
+        id="readout"
+      >
+
+        <div class="readout-header">
+
+          <div>
+
+            <div class="readout-label">
+              Predicted Total Serum Bilirubin
+            </div>
+
+            <div>
+
+              <span
+                class="readout-value"
+                id="readoutValue"
+              >
+                --
+              </span>
+
+              <span class="readout-unit">
+                mg/dL
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div class="result-status">
+            MEASUREMENT COMPLETE
+          </div>
+
+        </div>
+
+
+        <div class="readout-meta">
+
+          <span id="readoutAge"></span>
+
+          <span id="readoutTime"></span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- RIGHT DEVICE PANEL -->
+
+    <div class="device-panel">
+
+      <div class="device-panel-label">
+        Connected Screening Device
+      </div>
+
+      <h3>
+        NeoScan Sensor
+      </h3>
+
+      <div class="device-panel-description">
+        Optical measurement interface for neonatal jaundice
+        screening and bilirubin estimation.
+      </div>
+
+
+      <div class="device-mini">
+
+        <div class="mini-ring">
+
+          <div class="mini-core"></div>
+
+        </div>
+
+      </div>
+
+
+      <div class="device-info">
+
+        <div class="device-info-row">
+
+          <span>
+            DEVICE
+          </span>
+
+          <strong>
+            NS-01
+          </strong>
+
+        </div>
+
+
+        <div class="device-info-row">
+
+          <span>
+            CONNECTION
+          </span>
+
+          <strong>
+            READY
+          </strong>
+
+        </div>
+
+
+        <div class="device-info-row">
+
+          <span>
+            SENSOR
+          </span>
+
+          <strong>
+            OPTICAL
+          </strong>
+
+        </div>
+
+
+        <div class="device-info-row">
+
+          <span>
+            MODE
+          </span>
+
+          <strong>
+            SCREENING
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     HISTORY
+===================================================== -->
+
+<section class="page" id="page-history">
+
+  <div class="page-header">
+
+    <div>
+
+      <div class="eyebrow">
+        Patient Records
+      </div>
+
+      <h1>
+        Reading history
+      </h1>
+
+      <p class="sub">
+        Search using the baby's unique identification code
+        to review recorded measurements.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <div class="history-toolbar">
+
+    <input
+      id="historySearch"
+      placeholder="Enter baby code — e.g. BABY_001"
+      value="BABY_001"
+    >
+
+    <button
+      class="history-search-btn"
+      onclick="loadHistory()"
+    >
+      SEARCH RECORDS
+    </button>
+
+  </div>
+
+
+  <div id="historyResults"></div>
+
+
+  <div class="console-footer">
+
+    <span>
+      NEOSCAN / PATIENT RECORDS
+    </span>
+
+    <span>
+      READING DATABASE
+    </span>
+
+  </div>
+
+</section>
 
 </main>
 
+
 <script>
-const API_BASE = "http://127.0.0.1:8000";
 
-// --- navigation ---
+/* =====================================================
+   BACKEND
+===================================================== */
+
+const API_BASE = "http://127.0.0.1:5000";
+
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
 document.querySelectorAll('nav button').forEach(btn => {
-  btn.addEventListener('click', () => goTo(btn.dataset.page));
+
+  btn.addEventListener('click', () => {
+
+    goTo(btn.dataset.page);
+
+  });
+
 });
+
+
 function goTo(page){
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-  document.getElementById('page-' + page).classList.add('active');
-  document.querySelector(`nav button[data-page="${page}"]`).classList.add('active');
+
+  document
+    .querySelectorAll('.page')
+    .forEach(p => p.classList.remove('active'));
+
+  document
+    .querySelectorAll('nav button')
+    .forEach(b => b.classList.remove('active'));
+
+  document
+    .getElementById('page-' + page)
+    .classList.add('active');
+
+  const navButton =
+    document.querySelector(
+      `nav button[data-page="${page}"]`
+    );
+
+  if(navButton){
+    navButton.classList.add('active');
+  }
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
 }
 
 
-// --- baby profile ---
-async function createProfile(){
-  const btn = document.getElementById('profileBtn');
-  const error = document.getElementById('profileError');
-  const success = document.getElementById('profileSuccess');
+/* =====================================================
+   PREDICT / NEW READING
+===================================================== */
 
-  error.classList.remove('show');
-  success.classList.remove('show');
-
-  const baby_code = document.getElementById('profile_baby_code').value.trim();
-  const sex = document.getElementById('profile_sex').value;
-  const gestational_age_weeks = parseFloat(document.getElementById('profile_gest').value);
-  const skin_tone_category = parseInt(document.getElementById('profile_skin').value);
-
-  if(!baby_code){
-    error.textContent = "Enter a baby code.";
-    error.classList.add('show');
-    return;
-  }
-  if(Number.isNaN(gestational_age_weeks)){
-    error.textContent = "Enter gestational age.";
-    error.classList.add('show');
-    return;
-  }
-  if(Number.isNaN(skin_tone_category) || skin_tone_category < 1 || skin_tone_category > 5){
-    error.textContent = "Skin tone category must be between 1 and 5.";
-    error.classList.add('show');
-    return;
-  }
-
-  btn.disabled = true;
-  btn.textContent = "Saving...";
-
-  try{
-    const res = await fetch(`${API_BASE}/babies`, {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({
-        baby_code,
-        sex,
-        gestational_age_weeks,
-        skin_tone_category
-      })
-    });
-
-    if(!res.ok){
-      const err = await res.json().catch(() => ({detail:"Request failed"}));
-      throw new Error(err.detail || "Could not save profile");
-    }
-
-    const data = await res.json();
-    document.getElementById('profileSavedCode').textContent =
-      `Baby code: ${data.baby_code || baby_code}`;
-    document.getElementById('baby_code').value = baby_code;
-    success.classList.add('show');
-
-  }catch(e){
-    error.textContent = e.message;
-    error.classList.add('show');
-  }finally{
-    btn.disabled = false;
-    btn.textContent = "Save Baby Profile";
-  }
-}
-
-// --- predict page ---
 async function submitReading(){
-  const btn = document.getElementById('submitBtn');
-  const errorBox = document.getElementById('errorBox');
-  const readout = document.getElementById('readout');
+
+  const btn =
+    document.getElementById('submitBtn');
+
+  const errorBox =
+    document.getElementById('errorBox');
+
+  const readout =
+    document.getElementById('readout');
+
+
   errorBox.classList.remove('show');
+
   readout.classList.remove('show');
 
+
   const body = {
-    baby_code: document.getElementById('baby_code').value.trim(),
-    age_hours: parseFloat(document.getElementById('age').value),
-    red: parseFloat(document.getElementById('red').value),
-    green: parseFloat(document.getElementById('green').value),
-    blue: parseFloat(document.getElementById('blue').value),
-    clear: parseFloat(document.getElementById('clear').value),
+
+    baby_code:
+      document.getElementById('baby_code').value,
+
+    sex:
+      document.getElementById('sex').value,
+
+    gestational_age_weeks:
+      parseFloat(
+        document.getElementById('gest').value
+      ),
+
+    skin_tone_category:
+      parseInt(
+        document.getElementById('skin').value
+      ),
+
+    age_hours:
+      parseFloat(
+        document.getElementById('age').value
+      ),
+
+    red:
+      parseFloat(
+        document.getElementById('red').value
+      ),
+
+    green:
+      parseFloat(
+        document.getElementById('green').value
+      ),
+
+    blue:
+      parseFloat(
+        document.getElementById('blue').value
+      ),
+
+    clear:
+      parseFloat(
+        document.getElementById('clear').value
+      )
+
   };
 
-  if(!body.baby_code) throw new Error("Enter a baby code. Create the baby profile first.");
-  if(Number.isNaN(body.age_hours)) throw new Error("Enter the baby's age at the time of reading.");
 
-  btn.disabled = true; btn.textContent = "Reading...";
+  btn.disabled = true;
+
+  btn.textContent =
+    "PROCESSING MEASUREMENT...";
+
 
   try{
-    const res = await fetch(`${API_BASE}/predict`, {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify(body)
-    });
-    if(!res.ok){
-      const err = await res.json().catch(() => ({detail: "Request failed"}));
-      throw new Error(err.detail || "Request failed");
-    }
-    const data = await res.json();
 
-    document.getElementById('readoutValue').textContent = data.predicted_bilirubin_mg_dl;
-    document.getElementById('readoutAge').textContent = `Age at reading: ${data.age_hours}h`;
-    document.getElementById('readoutTime').textContent = new Date(data.created_at).toLocaleString();
+    const res = await fetch(
+      `${API_BASE}/predict`,
+      {
+        method:"POST",
+
+        headers:{
+          "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify(body)
+      }
+    );
+
+
+    if(!res.ok){
+
+      const err =
+        await res
+          .json()
+          .catch(() => ({
+            detail:"Request failed"
+          }));
+
+      throw new Error(
+        err.detail || "Request failed"
+      );
+
+    }
+
+
+    const data =
+      await res.json();
+
+
+    document
+      .getElementById('readoutValue')
+      .textContent =
+      data.predicted_bilirubin_mg_dl;
+
+
+    document
+      .getElementById('readoutAge')
+      .textContent =
+      `Age at reading: ${data.age_hours}h`;
+
+
+    document
+      .getElementById('readoutTime')
+      .textContent =
+      new Date(
+        data.created_at
+      ).toLocaleString();
+
+
     readout.classList.add('show');
 
+
   }catch(e){
-    errorBox.textContent = "Couldn't reach the backend — make sure it's running on " + API_BASE + " with CORS enabled. (" + e.message + ")";
+
+    errorBox.textContent =
+      "Couldn't reach the backend — make sure it's running on "
+      + API_BASE
+      + " with CORS enabled. ("
+      + e.message
+      + ")";
+
     errorBox.classList.add('show');
+
   }finally{
-    btn.disabled = false; btn.textContent = "Get Prediction";
+
+    btn.disabled = false;
+
+    btn.textContent =
+      "RUN BILIRUBIN MEASUREMENT";
+
   }
+
 }
-                       
-// --- history page ---
+
+
+/* =====================================================
+   HISTORY
+===================================================== */
+
 async function loadHistory(){
-  const code = document.getElementById('historySearch').value.trim();
-  const results = document.getElementById('historyResults');
-  results.innerHTML = `<div class="empty-state">Loading...</div>`;
 
-  if(!code){ results.innerHTML = `<div class="empty-state">Enter a baby code to search.</div>`; return; }
+  const code =
+    document
+      .getElementById('historySearch')
+      .value
+      .trim();
 
-  try{
-    const res = await fetch(`${API_BASE}/babies/${encodeURIComponent(code)}/readings`);
-    if(res.status === 404){
-      results.innerHTML = `<div class="empty-state">No baby found with code "${code}".</div>`;
-      return;
-    }
-    if(!res.ok) throw new Error("Request failed");
-    const readings = await res.json();
+  const results =
+    document.getElementById(
+      'historyResults'
+    );
 
-    if(readings.length === 0){
-      results.innerHTML = `<div class="empty-state">No readings recorded yet for ${code}.</div>`;
-      return;
-    }
 
-    let rows = readings.map(r => `
-      <tr>
-        <td>${r.age_hours}h</td>
-        <td>${r.predicted_bilirubin_mg_dl} mg/dL</td>
-        <td>${r.red} / ${r.green} / ${r.blue} / ${r.clear}</td>
-        <td>${new Date(r.created_at).toLocaleString()}</td>
-      </tr>`).join('');
+  results.innerHTML = `
+    <div class="empty-state">
+      <div class="empty-icon">...</div>
+      Loading patient records...
+    </div>
+  `;
+
+
+  if(!code){
 
     results.innerHTML = `
-      <table>
-        <thead><tr><th>Age</th><th>Bilirubin</th><th>R / G / B / C</th><th>Recorded</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>`;
+      <div class="empty-state">
+        <div class="empty-icon">!</div>
+        Enter a baby code to search.
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  try{
+
+    const res = await fetch(
+      `${API_BASE}/babies/${encodeURIComponent(code)}/readings`
+    );
+
+
+    if(res.status === 404){
+
+      results.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">?</div>
+          No baby found with code
+          "${code}".
+        </div>
+      `;
+
+      return;
+
+    }
+
+
+    if(!res.ok){
+
+      throw new Error(
+        "Request failed"
+      );
+
+    }
+
+
+    const readings =
+      await res.json();
+
+
+    if(readings.length === 0){
+
+      results.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">—</div>
+          No readings recorded yet for
+          ${code}.
+        </div>
+      `;
+
+      return;
+
+    }
+
+
+    let rows =
+      readings
+      .map(r => `
+
+        <tr>
+
+          <td>
+            ${r.age_hours}h
+          </td>
+
+          <td class="bilirubin-value">
+            ${r.predicted_bilirubin_mg_dl}
+            mg/dL
+          </td>
+
+          <td class="sensor-values">
+            ${r.red}
+            /
+            ${r.green}
+            /
+            ${r.blue}
+            /
+            ${r.clear}
+          </td>
+
+          <td>
+            ${new Date(
+              r.created_at
+            ).toLocaleString()}
+          </td>
+
+        </tr>
+
+      `)
+      .join('');
+
+
+    results.innerHTML = `
+
+      <div class="history-info">
+
+        <div class="history-info-title">
+          Patient measurements
+        </div>
+
+        <div class="history-info-code">
+          ${code}
+        </div>
+
+      </div>
+
+
+      <div class="history-table-wrap">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Age
+              </th>
+
+              <th>
+                Bilirubin
+              </th>
+
+              <th>
+                R / G / B / C
+              </th>
+
+              <th>
+                Recorded
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+            ${rows}
+          </tbody>
+
+        </table>
+
+      </div>
+
+    `;
+
 
   }catch(e){
-    results.innerHTML = `<div class="empty-state">Couldn't reach the backend — make sure it's running on ${API_BASE}.</div>`;
+
+    results.innerHTML = `
+
+      <div class="empty-state">
+
+        <div class="empty-icon">
+          !
+        </div>
+
+        Couldn't reach the backend —
+        make sure it's running on
+        ${API_BASE}.
+
+      </div>
+
+    `;
+
   }
+
 }
+
 </script>
 
 </body>
