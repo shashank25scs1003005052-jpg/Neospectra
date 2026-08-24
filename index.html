@@ -1,41 +1,43 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>NeoScan — Neonatal Jaundice Screening</title>
+<title>NeoScan — Jaundice Reading Console</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
 :root{
-  --bg:#eef3f2;
+  --bg:#f1f6f5;
   --panel:#ffffff;
-  --panel-soft:#f7faf9;
+  --panel2:#f8fbfa;
 
-  --ink:#10201d;
-  --muted:#667773;
+  --ink:#102522;
+  --muted:#6b7c79;
 
-  --teal:#0b5c56;
-  --teal-dark:#073b37;
-  --teal-soft:#dff3ef;
+  --teal:#0b625b;
+  --teal-dark:#063f3a;
+  --teal-light:#dff3ef;
 
-  --cyan:#35c7b0;
-  --cyan-soft:#e8faf6;
+  --cyan:#42d4bc;
+  --cyan-light:#e9faf6;
 
-  --amber:#c98524;
-  --amber-soft:#fff4df;
+  --line:#dce7e4;
 
-  --red:#b64b4b;
-  --red-soft:#fceeee;
+  --amber:#c98525;
+  --amber-light:#fff5e5;
 
-  --line:#dce6e4;
-  --shadow:0 12px 35px rgba(14,45,41,.07);
+  --danger:#b74646;
+  --danger-light:#fceeee;
+
+  --shadow:0 12px 35px rgba(6,63,58,.07);
 
   --display:'Space Grotesk',sans-serif;
-  --body:'DM Sans',sans-serif;
+  --body:'Inter',sans-serif;
   --mono:'IBM Plex Mono',monospace;
 }
 
@@ -43,28 +45,24 @@
   box-sizing:border-box;
 }
 
-html{
-  scroll-behavior:smooth;
-}
-
 body{
   margin:0;
-  background:var(--bg);
+  background:
+    radial-gradient(circle at 15% 0%,rgba(66,212,188,.06),transparent 25%),
+    var(--bg);
   color:var(--ink);
   font-family:var(--body);
 }
 
-/* =========================
-   HEADER
-========================= */
+/* HEADER */
 
 header{
   height:76px;
+  padding:0 32px;
+
   display:flex;
   align-items:center;
   justify-content:space-between;
-
-  padding:0 34px;
 
   background:rgba(255,255,255,.94);
   border-bottom:1px solid var(--line);
@@ -79,13 +77,14 @@ header{
 .brand{
   display:flex;
   align-items:center;
-  gap:12px;
+  gap:11px;
 }
 
 .brand-mark{
-  width:38px;
-  height:38px;
-  border-radius:11px;
+  width:36px;
+  height:36px;
+
+  border-radius:10px;
 
   background:var(--teal-dark);
 
@@ -93,42 +92,47 @@ header{
   align-items:center;
   justify-content:center;
 
-  box-shadow:0 6px 16px rgba(7,59,55,.18);
+  box-shadow:0 5px 15px rgba(6,63,58,.18);
 }
 
-.brand-mark-inner{
-  width:17px;
-  height:17px;
-  border:2px solid #65dfcb;
+.brand-mark span{
+  width:13px;
+  height:13px;
+
+  border:2px solid var(--cyan);
   border-radius:50%;
+
   position:relative;
 }
 
-.brand-mark-inner:after{
+.brand-mark span:after{
   content:"";
-  position:absolute;
+
   width:5px;
   height:5px;
-  background:#65dfcb;
+
+  background:var(--cyan);
+
   border-radius:50%;
-  top:4px;
-  left:4px;
+
+  position:absolute;
+  top:2px;
+  left:2px;
 }
 
 .brand-name{
   font-family:var(--display);
-  font-size:20px;
   font-weight:700;
+  font-size:20px;
   letter-spacing:-.03em;
 }
 
-.brand-tag{
+.brand-sub{
   font-family:var(--mono);
-  font-size:9px;
-  letter-spacing:.08em;
+  font-size:8px;
   color:var(--muted);
+  letter-spacing:.08em;
   text-transform:uppercase;
-  margin-top:2px;
 }
 
 .brand-text{
@@ -136,24 +140,22 @@ header{
   flex-direction:column;
 }
 
-/* NAV */
-
 nav{
   display:flex;
   gap:4px;
 
-  padding:5px;
-
-  background:#edf3f2;
+  background:#edf3f1;
   border:1px solid var(--line);
-  border-radius:12px;
+
+  padding:4px;
+  border-radius:11px;
 }
 
 nav button{
   border:0;
   background:transparent;
 
-  padding:9px 17px;
+  padding:9px 15px;
 
   border-radius:8px;
 
@@ -165,117 +167,133 @@ nav button{
 
   cursor:pointer;
 
-  transition:.2s;
+  transition:.25s ease;
 }
 
 nav button:hover{
   color:var(--teal-dark);
+  transform:translateY(-1px);
 }
 
 nav button.active{
   background:white;
   color:var(--teal-dark);
 
-  box-shadow:
-    0 2px 5px rgba(0,0,0,.06),
-    0 0 0 1px rgba(0,0,0,.03);
+  box-shadow:0 2px 7px rgba(0,0,0,.07);
 }
 
-/* DEVICE STATUS */
-
-.device-status{
+.system-status{
   display:flex;
   align-items:center;
-  gap:8px;
+  gap:7px;
 
   font-family:var(--mono);
-  font-size:10px;
-  text-transform:uppercase;
-  letter-spacing:.07em;
+  font-size:9px;
 
   color:var(--muted);
+  text-transform:uppercase;
 }
 
 .status-dot{
-  width:8px;
-  height:8px;
+  width:7px;
+  height:7px;
+
   border-radius:50%;
-  background:#39b89f;
-  box-shadow:0 0 0 4px rgba(57,184,159,.12);
+  background:#3bc2a7;
+
+  box-shadow:0 0 0 4px rgba(59,194,167,.12);
+
+  animation:pulse 2s infinite;
 }
 
-/* =========================
-   MAIN
-========================= */
+@keyframes pulse{
+  0%,100%{
+    box-shadow:0 0 0 4px rgba(59,194,167,.10);
+  }
+  50%{
+    box-shadow:0 0 0 8px rgba(59,194,167,.02);
+  }
+}
+
+/* MAIN */
 
 main{
-  max-width:1120px;
+  max-width:1080px;
   margin:auto;
 
-  padding:42px 28px 80px;
+  padding:44px 26px 80px;
 }
 
 .page{
   display:none;
+  animation:pageIn .35s ease;
 }
 
 .page.active{
   display:block;
 }
 
-/* =========================
-   COMMON
-========================= */
+@keyframes pageIn{
+  from{
+    opacity:0;
+    transform:translateY(8px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
 
 .eyebrow{
-  display:inline-flex;
+  display:flex;
   align-items:center;
   gap:7px;
 
   font-family:var(--mono);
   font-size:10px;
-  letter-spacing:.1em;
-  text-transform:uppercase;
 
   color:var(--teal);
+
+  letter-spacing:.11em;
+  text-transform:uppercase;
 
   margin-bottom:10px;
 }
 
 .eyebrow:before{
   content:"";
+
   width:6px;
   height:6px;
-  background:var(--cyan);
+
   border-radius:50%;
+  background:var(--cyan);
 }
 
 h1{
   font-family:var(--display);
-  font-size:38px;
-  line-height:1.08;
+  font-size:37px;
 
   letter-spacing:-.045em;
+  line-height:1.1;
 
   margin:0 0 10px;
 }
 
 .sub{
-  max-width:650px;
-
-  margin:0 0 34px;
-
   color:var(--muted);
 
-  font-size:15px;
+  font-size:14px;
   line-height:1.65;
+
+  max-width:650px;
+
+  margin:0 0 30px;
 }
 
-/* =========================
-   HOME
-========================= */
+/* HOME HERO */
 
-.home-hero{
+.hero{
   background:var(--teal-dark);
   color:white;
 
@@ -289,50 +307,48 @@ h1{
   box-shadow:var(--shadow);
 }
 
-.home-hero:before{
+.hero:before{
   content:"";
+
   position:absolute;
 
   width:330px;
   height:330px;
 
-  border:1px solid rgba(109,220,202,.16);
+  border:1px solid rgba(80,220,197,.16);
   border-radius:50%;
 
   right:-100px;
-  top:-150px;
+  top:-160px;
 }
 
-.home-hero:after{
+.hero:after{
   content:"";
+
   position:absolute;
 
   width:210px;
   height:210px;
 
-  border:1px solid rgba(109,220,202,.12);
+  border:1px solid rgba(80,220,197,.10);
   border-radius:50%;
 
-  right:10px;
-  top:-60px;
+  right:20px;
+  top:-90px;
 }
 
-.hero-grid{
+.hero-content{
   position:relative;
   z-index:2;
 
-  display:grid;
-  grid-template-columns:1.5fr .7fr;
-
-  gap:35px;
-  align-items:center;
+  max-width:650px;
 }
 
 .hero-label{
   font-family:var(--mono);
-  font-size:10px;
+  font-size:9px;
 
-  color:#86dacc;
+  color:#81d7c8;
 
   letter-spacing:.12em;
   text-transform:uppercase;
@@ -340,108 +356,101 @@ h1{
   margin-bottom:14px;
 }
 
-.home-hero h1{
-  max-width:650px;
+.hero h1{
   font-size:42px;
-  margin-bottom:15px;
+  color:white;
+  margin-bottom:14px;
 }
 
-.hero-description{
-  color:#b7cfca;
-  max-width:600px;
-  line-height:1.6;
+.hero p{
+  color:#b8cfca;
+  line-height:1.65;
   font-size:14px;
+  max-width:620px;
 }
 
-/* DEVICE VISUAL */
+/* HERO DEVICE */
 
-.device-visual{
-  display:flex;
-  justify-content:center;
-}
-
-.device-circle{
-  width:190px;
-  height:190px;
-
-  border-radius:50%;
-
-  border:1px solid rgba(101,223,203,.35);
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  position:relative;
-}
-
-.device-circle:before,
-.device-circle:after{
-  content:"";
+.hero-device{
   position:absolute;
 
-  border-radius:50%;
+  right:75px;
+  top:50%;
+  transform:translateY(-50%);
 
-  border:1px solid rgba(101,223,203,.2);
-}
-
-.device-circle:before{
-  inset:16px;
-}
-
-.device-circle:after{
-  inset:34px;
-}
-
-.device-core{
-  width:62px;
-  height:62px;
+  width:155px;
+  height:155px;
 
   border-radius:50%;
 
-  background:#5fe0c6;
-
-  box-shadow:
-    0 0 0 12px rgba(95,224,198,.1),
-    0 0 35px rgba(95,224,198,.3);
+  border:1px solid rgba(90,220,199,.35);
 
   display:flex;
   align-items:center;
   justify-content:center;
 }
 
-.device-core span{
-  width:17px;
-  height:17px;
+.hero-device:before{
+  content:"";
 
-  background:var(--teal-dark);
+  position:absolute;
+  inset:15px;
+
+  border:1px solid rgba(90,220,199,.20);
   border-radius:50%;
+}
+
+.hero-device:after{
+  content:"";
+
+  position:absolute;
+  inset:35px;
+
+  border:1px dashed rgba(90,220,199,.20);
+  border-radius:50%;
+}
+
+.hero-core{
+  width:50px;
+  height:50px;
+
+  background:var(--cyan);
+  border-radius:50%;
+
+  box-shadow:
+    0 0 0 10px rgba(66,212,188,.10),
+    0 0 35px rgba(66,212,188,.35);
 }
 
 /* HOME STATS */
 
-.home-stats{
+.stats{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:14px;
 
-  margin-top:18px;
+  margin-top:16px;
 }
 
-.stat-card{
+.stat{
   background:white;
+
   border:1px solid var(--line);
+  border-radius:13px;
 
-  border-radius:14px;
+  padding:19px;
 
-  padding:20px;
+  transition:.2s;
+}
 
-  box-shadow:0 5px 18px rgba(10,40,36,.035);
+.stat:hover{
+  transform:translateY(-2px);
+  box-shadow:var(--shadow);
 }
 
 .stat-label{
   font-family:var(--mono);
-  font-size:10px;
+  font-size:9px;
   color:var(--muted);
 
   text-transform:uppercase;
@@ -450,178 +459,195 @@ h1{
 
 .stat-value{
   font-family:var(--display);
-  font-size:24px;
+  font-size:22px;
   font-weight:700;
 
-  margin-top:8px;
+  margin-top:7px;
 }
 
-.stat-description{
-  font-size:12px;
+.stat-small{
   color:var(--muted);
+  font-size:11px;
   margin-top:3px;
 }
 
-/* HOME ACTIONS */
+/* HOME CARDS */
 
-.home-section-title{
-  margin-top:36px;
-  margin-bottom:14px;
-
+.workflow-title{
   display:flex;
   justify-content:space-between;
   align-items:end;
+
+  margin:35px 0 13px;
 }
 
-.home-section-title h2{
+.workflow-title h2{
   font-family:var(--display);
-  font-size:20px;
+  font-size:19px;
   margin:0;
 }
 
-.home-section-title span{
+.workflow-title span{
   font-family:var(--mono);
-  font-size:10px;
+  font-size:9px;
   color:var(--muted);
 }
 
 .home-cards{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:16px;
+  gap:15px;
 }
 
 .home-card{
   background:white;
 
   border:1px solid var(--line);
+  border-radius:15px;
 
-  border-radius:16px;
-
-  padding:24px;
+  padding:23px;
 
   cursor:pointer;
 
-  transition:.2s;
+  transition:.25s ease;
 
   position:relative;
   overflow:hidden;
 }
 
+.home-card:before{
+  content:"";
+
+  position:absolute;
+
+  width:100px;
+  height:100px;
+
+  border-radius:50%;
+
+  background:var(--cyan-light);
+
+  right:-45px;
+  bottom:-45px;
+
+  transition:.3s;
+}
+
 .home-card:hover{
-  border-color:#9bcfc7;
-  transform:translateY(-2px);
+  transform:translateY(-4px);
+  border-color:#9bd0c7;
   box-shadow:var(--shadow);
 }
 
-.card-top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+.home-card:hover:before{
+  transform:scale(1.5);
+}
 
-  margin-bottom:22px;
+.card-number{
+  font-family:var(--mono);
+  font-size:9px;
+  color:var(--teal);
+  letter-spacing:.08em;
 }
 
 .card-icon{
-  width:42px;
-  height:42px;
+  width:40px;
+  height:40px;
 
-  border-radius:11px;
+  background:var(--teal-light);
+
+  border-radius:10px;
 
   display:flex;
   align-items:center;
   justify-content:center;
 
-  background:var(--teal-soft);
   color:var(--teal);
 
   font-family:var(--mono);
+  font-size:11px;
   font-weight:600;
-}
 
-.card-number{
-  font-family:var(--mono);
-  font-size:10px;
-  color:#9aa9a6;
+  margin-bottom:20px;
 }
 
 .home-card h3{
   font-family:var(--display);
-  font-size:19px;
+  font-size:18px;
+
   margin:0 0 7px;
+
+  position:relative;
+  z-index:2;
 }
 
 .home-card p{
+  color:var(--muted);
+
+  font-size:12.5px;
+  line-height:1.6;
+
   margin:0;
 
-  font-size:13px;
-  line-height:1.55;
-
-  color:var(--muted);
+  position:relative;
+  z-index:2;
 }
 
-.card-arrow{
-  margin-top:20px;
+.card-action{
+  margin-top:19px;
 
   font-family:var(--mono);
-  font-size:11px;
+  font-size:9px;
 
   color:var(--teal);
+
+  position:relative;
+  z-index:2;
 }
 
-/* =========================
-   SECTION HEADER
-========================= */
+/* PAGE HEADER */
 
 .page-header{
   display:flex;
   justify-content:space-between;
   align-items:flex-start;
-  gap:30px;
+  gap:20px;
 }
 
 .header-status{
   padding:9px 12px;
 
-  border:1px solid var(--line);
   background:white;
+  border:1px solid var(--line);
 
-  border-radius:9px;
+  border-radius:8px;
 
   font-family:var(--mono);
-  font-size:10px;
+  font-size:9px;
 
   color:var(--muted);
-
-  white-space:nowrap;
 }
 
 .header-status span{
-  color:#2d9c88;
+  color:#2c9c87;
 }
 
-/* =========================
-   READING LAYOUT
-========================= */
-
-.reading-layout{
-  display:grid;
-  grid-template-columns:1.45fr .75fr;
-  gap:18px;
-}
+/* PANELS */
 
 .panel{
   background:white;
 
   border:1px solid var(--line);
 
-  border-radius:16px;
+  border-radius:15px;
 
-  box-shadow:0 5px 20px rgba(10,40,36,.035);
+  box-shadow:0 5px 22px rgba(8,54,49,.035);
+
+  overflow:hidden;
 }
 
 .panel-header{
-  padding:20px 22px;
+  padding:18px 21px;
 
   border-bottom:1px solid var(--line);
 
@@ -639,28 +665,32 @@ h1{
 .panel-code{
   font-family:var(--mono);
   font-size:9px;
-
   color:var(--muted);
-
-  letter-spacing:.08em;
+  letter-spacing:.07em;
 }
 
 .panel-body{
   padding:22px;
 }
 
-/* FORM */
+/* BABY PROFILE */
+
+.profile-layout{
+  display:grid;
+  grid-template-columns:1fr .65fr;
+  gap:16px;
+}
 
 .grid{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:16px;
+  gap:15px;
 }
 
 .field{
   display:flex;
   flex-direction:column;
-  gap:7px;
+  gap:6px;
 }
 
 .field.full{
@@ -669,15 +699,11 @@ h1{
 
 label{
   font-family:var(--mono);
-
-  font-size:10px;
-
-  font-weight:500;
+  font-size:9px;
 
   color:var(--muted);
 
   text-transform:uppercase;
-
   letter-spacing:.07em;
 }
 
@@ -685,26 +711,25 @@ input,
 select{
   width:100%;
 
-  font-family:var(--mono);
-
-  font-size:13px;
-
   padding:12px 13px;
 
   border:1px solid var(--line);
 
-  border-radius:9px;
+  border-radius:8px;
 
   background:#fbfdfc;
 
   color:var(--ink);
+
+  font-family:var(--mono);
+  font-size:13px;
 
   transition:.2s;
 }
 
 input:hover,
 select:hover{
-  border-color:#b9cbc8;
+  border-color:#b6cbc7;
 }
 
 input:focus,
@@ -713,26 +738,127 @@ select:focus{
 
   border-color:var(--teal);
 
-  box-shadow:0 0 0 3px rgba(11,92,86,.08);
-
   background:white;
+
+  box-shadow:
+    0 0 0 3px rgba(11,98,91,.08);
 }
 
-/* PROFILE SECTION */
+/* SAVE PROFILE BUTTON */
+
+.save-profile-btn{
+  width:100%;
+
+  margin-top:18px;
+
+  padding:13px;
+
+  border:1px solid var(--teal);
+
+  border-radius:9px;
+
+  background:var(--teal-light);
+
+  color:var(--teal-dark);
+
+  font-family:var(--display);
+  font-weight:600;
+  font-size:13px;
+
+  cursor:pointer;
+
+  transition:.2s;
+}
+
+.save-profile-btn:hover{
+  background:#ccebe5;
+  transform:translateY(-1px);
+}
+
+/* PROFILE SIDE */
+
+.profile-summary{
+  background:var(--teal-dark);
+
+  color:white;
+
+  border-radius:15px;
+
+  padding:22px;
+
+  position:relative;
+  overflow:hidden;
+}
+
+.profile-summary:before{
+  content:"";
+
+  position:absolute;
+
+  width:180px;
+  height:180px;
+
+  border:1px solid rgba(66,212,188,.15);
+  border-radius:50%;
+
+  right:-80px;
+  top:-70px;
+}
+
+.profile-summary-label{
+  font-family:var(--mono);
+  font-size:9px;
+
+  color:#82d5c7;
+
+  text-transform:uppercase;
+  letter-spacing:.1em;
+}
+
+.profile-summary h3{
+  font-family:var(--display);
+  font-size:21px;
+
+  margin:8px 0 5px;
+}
+
+.profile-summary p{
+  color:#aac5c0;
+
+  font-size:11px;
+  line-height:1.55;
+
+  margin:0 0 22px;
+}
+
+.profile-status{
+  display:flex;
+  align-items:center;
+  gap:7px;
+
+  padding-top:15px;
+
+  border-top:1px solid rgba(255,255,255,.1);
+
+  font-family:var(--mono);
+  font-size:9px;
+
+  color:#b9d7d1;
+}
+
+/* SECTION */
 
 .section-label{
   display:flex;
   align-items:center;
   gap:10px;
 
-  margin:26px 0 15px;
+  margin:26px 0 13px;
 
   font-family:var(--mono);
-
-  font-size:10px;
+  font-size:9px;
 
   text-transform:uppercase;
-
   letter-spacing:.1em;
 
   color:var(--teal);
@@ -741,25 +867,22 @@ select:focus{
 .section-label:after{
   content:"";
   height:1px;
-  background:var(--line);
   flex:1;
+  background:var(--line);
 }
 
 /* SENSOR */
 
 .sensor-panel{
-  margin-top:18px;
-
-  background:#f8fbfa;
+  background:var(--panel2);
 
   border:1px solid var(--line);
+  border-radius:11px;
 
-  border-radius:12px;
-
-  padding:18px;
+  padding:17px;
 }
 
-.sensor-title{
+.sensor-head{
   display:flex;
   justify-content:space-between;
   align-items:center;
@@ -767,60 +890,61 @@ select:focus{
   margin-bottom:15px;
 }
 
-.sensor-title strong{
+.sensor-head strong{
   font-family:var(--display);
   font-size:13px;
 }
 
-.sensor-state{
+.sensor-ready{
   display:flex;
   align-items:center;
   gap:6px;
 
   font-family:var(--mono);
-  font-size:9px;
+  font-size:8px;
 
-  color:#338d7d;
+  color:#31927e;
 }
 
-.sensor-state .status-dot{
-  width:6px;
-  height:6px;
+.sensor-ready .status-dot{
+  width:5px;
+  height:5px;
 }
 
-/* BUTTON */
+/* READING BUTTON */
 
 .submit-btn{
-  margin-top:20px;
-
   width:100%;
 
-  padding:14px 18px;
+  margin-top:20px;
+
+  padding:14px;
 
   border:none;
 
-  border-radius:10px;
+  border-radius:9px;
 
   background:var(--teal-dark);
 
   color:white;
 
   font-family:var(--display);
-
-  font-weight:600;
-
   font-size:14px;
+  font-weight:600;
 
   cursor:pointer;
 
-  transition:.2s;
+  transition:.25s;
 
-  box-shadow:0 7px 18px rgba(7,59,55,.15);
+  box-shadow:0 7px 18px rgba(6,63,58,.15);
 }
 
 .submit-btn:hover{
   background:var(--teal);
-  transform:translateY(-1px);
+
+  transform:translateY(-2px);
+
+  box-shadow:0 10px 22px rgba(6,63,58,.19);
 }
 
 .submit-btn:disabled{
@@ -829,28 +953,27 @@ select:focus{
   transform:none;
 }
 
-/* =========================
-   SIDE DEVICE CARD
-========================= */
+/* DEVICE */
 
 .device-panel{
-  height:max-content;
   background:var(--teal-dark);
 
   color:white;
 
-  border-radius:16px;
+  border-radius:15px;
 
   padding:22px;
+
+  height:max-content;
 
   box-shadow:var(--shadow);
 }
 
-.device-panel-label{
+.device-label{
   font-family:var(--mono);
   font-size:9px;
 
-  color:#83d5c7;
+  color:#82d5c7;
 
   text-transform:uppercase;
   letter-spacing:.1em;
@@ -858,228 +981,218 @@ select:focus{
 
 .device-panel h3{
   font-family:var(--display);
-
   font-size:20px;
 
-  margin:8px 0 6px;
+  margin:8px 0;
 }
 
-.device-panel-description{
-  color:#a9c5c0;
+.device-panel p{
+  color:#a8c3be;
 
-  font-size:12px;
-
-  line-height:1.55;
-
-  margin-bottom:25px;
+  font-size:11px;
+  line-height:1.6;
 }
 
-.device-mini{
-  height:170px;
+.device-visual-small{
+  height:160px;
+
+  margin:20px 0;
+
+  border-radius:11px;
+
+  border:1px solid rgba(130,213,199,.13);
 
   display:flex;
   align-items:center;
   justify-content:center;
 
-  background:
-    radial-gradient(circle at center,
-    rgba(95,224,198,.11),
-    transparent 58%);
-
-  border:1px solid rgba(134,213,199,.12);
-
-  border-radius:12px;
-
-  margin-bottom:18px;
+  background:radial-gradient(
+    circle,
+    rgba(66,212,188,.10),
+    transparent 60%
+  );
 }
 
-.mini-ring{
-  width:105px;
-  height:105px;
+.ring{
+  width:95px;
+  height:95px;
 
   border-radius:50%;
 
-  border:1px solid rgba(95,224,198,.45);
+  border:1px solid rgba(66,212,188,.4);
 
   display:flex;
   align-items:center;
   justify-content:center;
 
   position:relative;
+
+  animation:rotateSlow 12s linear infinite;
 }
 
-.mini-ring:before{
+.ring:before{
   content:"";
 
   position:absolute;
 
-  inset:12px;
+  inset:13px;
 
   border-radius:50%;
 
-  border:1px dashed rgba(95,224,198,.25);
+  border:1px dashed rgba(66,212,188,.25);
 }
 
-.mini-core{
-  width:34px;
-  height:34px;
+.ring-core{
+  width:32px;
+  height:32px;
 
   border-radius:50%;
 
-  background:#5fe0c6;
+  background:var(--cyan);
 
-  box-shadow:0 0 22px rgba(95,224,198,.3);
+  box-shadow:0 0 25px rgba(66,212,188,.4);
 }
 
-.device-info{
-  border-top:1px solid rgba(255,255,255,.1);
-
-  padding-top:16px;
+@keyframes rotateSlow{
+  from{
+    transform:rotate(0);
+  }
+  to{
+    transform:rotate(360deg);
+  }
 }
 
-.device-info-row{
+.device-row{
   display:flex;
   justify-content:space-between;
 
-  padding:7px 0;
+  padding:8px 0;
+
+  border-top:1px solid rgba(255,255,255,.08);
 
   font-family:var(--mono);
-  font-size:9px;
+  font-size:8px;
 
-  color:#9dbab5;
+  color:#94b5af;
 }
 
-.device-info-row strong{
-  color:#d3e7e3;
+.device-row strong{
+  color:#d1e4df;
   font-weight:500;
 }
 
-/* =========================
-   READOUT
-========================= */
+/* RESULT */
 
 .readout{
-  margin-top:18px;
+  margin-top:17px;
 
   background:var(--teal-dark);
 
-  border-radius:16px;
+  border-radius:15px;
 
-  padding:25px;
+  padding:24px;
 
   display:none;
 
-  box-shadow:0 12px 30px rgba(7,59,55,.13);
+  color:white;
+
+  animation:resultIn .4s ease;
 }
 
 .readout.show{
   display:block;
 }
 
-.readout-header{
+@keyframes resultIn{
+  from{
+    opacity:0;
+    transform:translateY(10px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+.readout-top{
   display:flex;
   justify-content:space-between;
-  align-items:start;
+  align-items:flex-start;
 }
 
 .readout-label{
   font-family:var(--mono);
-
   font-size:9px;
 
-  color:#8fd6c7;
+  color:#88d4c6;
 
   text-transform:uppercase;
-
   letter-spacing:.1em;
 
   margin-bottom:8px;
 }
 
-.result-status{
-  padding:6px 9px;
-
-  border:1px solid rgba(95,224,198,.2);
-
-  background:rgba(95,224,198,.07);
-
-  border-radius:7px;
-
-  color:#7fd9c9;
-
-  font-family:var(--mono);
-
-  font-size:9px;
-
-  text-transform:uppercase;
-}
-
 .readout-value{
   font-family:var(--mono);
+  font-size:50px;
 
-  font-size:52px;
-
-  color:#5fe0c6;
+  color:var(--cyan);
 
   font-weight:600;
-
-  line-height:1;
 }
 
 .readout-unit{
   font-family:var(--mono);
+  font-size:13px;
 
-  font-size:14px;
+  color:#8bd2c5;
 
-  color:#8fd6c7;
+  margin-left:8px;
+}
 
-  margin-left:9px;
+.result-badge{
+  font-family:var(--mono);
+  font-size:8px;
+
+  color:#7bd6c5;
+
+  border:1px solid rgba(66,212,188,.2);
+
+  background:rgba(66,212,188,.06);
+
+  padding:6px 8px;
+
+  border-radius:6px;
 }
 
 .readout-meta{
-  margin-top:18px;
+  margin-top:16px;
 
   display:flex;
+  gap:22px;
+
   flex-wrap:wrap;
-  gap:25px;
 
   font-family:var(--mono);
+  font-size:9px;
 
-  font-size:10px;
-
-  color:#b7d8d1;
+  color:#b6d3ce;
 }
 
-.readout-meta span{
-  display:flex;
-  align-items:center;
-  gap:6px;
-}
-
-.readout-meta span:before{
-  content:"";
-  width:5px;
-  height:5px;
-  background:#5fe0c6;
-  border-radius:50%;
-}
-
-/* =========================
-   ERROR
-========================= */
+/* ERROR */
 
 .error-box{
-  margin-top:18px;
+  margin-top:16px;
 
   padding:13px 15px;
 
-  background:var(--red-soft);
+  background:var(--danger-light);
 
-  border:1px solid #e7bebe;
+  border:1px solid #e5b9b9;
 
-  border-radius:9px;
+  border-radius:8px;
 
-  color:#8d3333;
+  color:#8c3333;
 
   font-size:12px;
 
@@ -1090,78 +1203,77 @@ select:focus{
   display:block;
 }
 
-/* =========================
-   HISTORY
-========================= */
+/* HISTORY */
 
-.history-toolbar{
+.history-search{
+  display:flex;
+  gap:10px;
+
   background:white;
+
+  padding:14px;
 
   border:1px solid var(--line);
 
-  border-radius:14px;
-
-  padding:16px;
-
-  display:flex;
-  gap:10px;
+  border-radius:13px;
 
   margin-bottom:18px;
 }
 
-.history-toolbar input{
+.history-search input{
   flex:1;
 }
 
-.history-search-btn{
-  font-family:var(--body);
+.history-search button{
+  padding:0 20px;
 
-  font-weight:600;
+  border:0;
 
-  padding:0 22px;
-
-  border-radius:9px;
-
-  border:1px solid var(--teal);
+  border-radius:8px;
 
   background:var(--teal);
 
   color:white;
 
+  font-family:var(--body);
+  font-size:12px;
+  font-weight:600;
+
   cursor:pointer;
+
+  transition:.2s;
 }
 
-.history-search-btn:hover{
+.history-search button:hover{
   background:var(--teal-dark);
 }
 
 .history-info{
   display:flex;
-
-  align-items:center;
   justify-content:space-between;
+  align-items:center;
 
-  margin-bottom:12px;
+  margin-bottom:10px;
 }
 
-.history-info-title{
+.history-title{
   font-family:var(--display);
   font-size:15px;
   font-weight:700;
 }
 
-.history-info-code{
+.history-code{
   font-family:var(--mono);
-  font-size:10px;
+  font-size:9px;
   color:var(--teal);
 }
 
-.history-table-wrap{
+.table-wrap{
   background:white;
 
   border:1px solid var(--line);
 
-  border-radius:14px;
+  border-radius:13px;
 
   overflow:hidden;
 }
@@ -1174,31 +1286,28 @@ table{
 th{
   text-align:left;
 
-  font-family:var(--mono);
-
-  font-size:9px;
-
-  text-transform:uppercase;
-
-  letter-spacing:.08em;
-
-  color:var(--muted);
-
-  padding:13px 15px;
+  padding:12px 14px;
 
   background:#f7faf9;
 
   border-bottom:1px solid var(--line);
+
+  font-family:var(--mono);
+  font-size:9px;
+
+  text-transform:uppercase;
+  letter-spacing:.06em;
+
+  color:var(--muted);
 }
 
 td{
-  padding:14px 15px;
-
-  font-family:var(--mono);
-
-  font-size:11px;
+  padding:13px 14px;
 
   border-bottom:1px solid var(--line);
+
+  font-family:var(--mono);
+  font-size:11px;
 }
 
 tr:last-child td{
@@ -1209,9 +1318,8 @@ tr:hover td{
   background:#fbfdfc;
 }
 
-.bilirubin-value{
+.bilirubin{
   color:var(--teal);
-
   font-weight:600;
 }
 
@@ -1224,66 +1332,61 @@ tr:hover td{
 .empty-state{
   text-align:center;
 
-  padding:55px 20px;
+  padding:50px 20px;
 
   color:var(--muted);
 
-  font-size:13px;
+  font-size:12px;
 }
 
 .empty-icon{
-  width:42px;
-  height:42px;
+  width:40px;
+  height:40px;
 
-  margin:0 auto 13px;
+  margin:0 auto 12px;
 
   border-radius:50%;
-
-  background:var(--teal-soft);
 
   display:flex;
   align-items:center;
   justify-content:center;
+
+  background:var(--teal-light);
 
   color:var(--teal);
 
   font-family:var(--mono);
 }
 
-/* =========================
-   FOOTER
-========================= */
+/* FOOTER */
 
-.console-footer{
-  margin-top:42px;
+.footer{
+  margin-top:35px;
 
-  display:flex;
-
-  justify-content:space-between;
+  padding-top:15px;
 
   border-top:1px solid var(--line);
 
-  padding-top:16px;
-
-  color:#879692;
+  display:flex;
+  justify-content:space-between;
 
   font-family:var(--mono);
+  font-size:8px;
 
-  font-size:9px;
+  color:#899894;
 
-  text-transform:uppercase;
-
-  letter-spacing:.05em;
+  letter-spacing:.06em;
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
+/* RESPONSIVE */
 
-@media(max-width:900px){
+@media(max-width:850px){
 
-  .hero-grid,
-  .reading-layout{
+  .hero-device{
+    display:none;
+  }
+
+  .profile-layout{
     grid-template-columns:1fr;
   }
 
@@ -1293,40 +1396,35 @@ tr:hover td{
 
 }
 
-@media(max-width:700px){
+@media(max-width:650px){
 
   header{
-    padding:0 16px;
+    padding:0 14px;
   }
 
-  .brand-tag,
-  .device-status{
+  .system-status{
     display:none;
   }
 
   nav button{
-    padding:8px 10px;
-    font-size:11px;
+    padding:8px 9px;
+    font-size:10px;
   }
 
   main{
-    padding:28px 16px 60px;
+    padding:28px 15px 60px;
   }
 
   h1,
-  .home-hero h1{
+  .hero h1{
     font-size:30px;
   }
 
-  .home-hero{
+  .hero{
     padding:26px;
   }
 
-  .device-visual{
-    display:none;
-  }
-
-  .home-stats{
+  .stats{
     grid-template-columns:1fr;
   }
 
@@ -1342,15 +1440,15 @@ tr:hover td{
     grid-column:auto;
   }
 
-  .history-toolbar{
+  .history-search{
     flex-direction:column;
   }
 
-  .history-search-btn{
+  .history-search button{
     padding:12px;
   }
 
-  .history-table-wrap{
+  .table-wrap{
     overflow-x:auto;
   }
 
@@ -1358,11 +1456,7 @@ tr:hover td{
     min-width:650px;
   }
 
-  .page-header{
-    flex-direction:column;
-  }
-
-  .console-footer{
+  .footer{
     flex-direction:column;
     gap:8px;
   }
@@ -1370,36 +1464,41 @@ tr:hover td{
 </style>
 </head>
 
-<body>
 
-<!-- =========================
-     HEADER
-========================= -->
+<body>
 
 <header>
 
   <div class="brand">
 
     <div class="brand-mark">
-      <div class="brand-mark-inner"></div>
+      <span></span>
     </div>
 
     <div class="brand-text">
       <div class="brand-name">NeoScan</div>
-      <div class="brand-tag">Neonatal Screening Console</div>
+      <div class="brand-sub">
+        Neonatal Screening Console
+      </div>
     </div>
 
   </div>
 
-  <div class="device-status">
+
+  <div class="system-status">
     <span class="status-dot"></span>
     System Ready
   </div>
 
+
   <nav>
 
     <button data-page="home" class="active">
-      Overview
+      Home
+    </button>
+
+    <button data-page="profile">
+      Baby Profile
     </button>
 
     <button data-page="predict">
@@ -1417,74 +1516,64 @@ tr:hover td{
 
 <main>
 
+
 <!-- =====================================================
      HOME
 ===================================================== -->
 
 <section class="page active" id="page-home">
 
-  <div class="home-hero">
+  <div class="hero">
 
-    <div class="hero-grid">
+    <div class="hero-content">
 
-      <div>
-
-        <div class="hero-label">
-          NEONATAL JAUNDICE SCREENING / NS-01
-        </div>
-
-        <h1>
-          Bedside bilirubin screening,
-          simplified.
-        </h1>
-
-        <p class="hero-description">
-          NeoScan provides a structured clinical workflow for
-          recording neonatal information, receiving sensor readings,
-          and monitoring bilirubin measurements over time.
-        </p>
-
+      <div class="hero-label">
+        Neonatal Jaundice Screening / NS-01
       </div>
 
-      <div class="device-visual">
+      <h1>
+        Intelligent bedside
+        bilirubin screening.
+      </h1>
 
-        <div class="device-circle">
+      <p>
+        NeoScan provides a structured workflow for creating
+        baby profiles, taking optical sensor readings and
+        tracking bilirubin measurements over time.
+      </p>
 
-          <div class="device-core">
-            <span></span>
-          </div>
+    </div>
 
-        </div>
 
-      </div>
+    <div class="hero-device">
+
+      <div class="hero-core"></div>
 
     </div>
 
   </div>
 
 
-  <!-- SYSTEM STATS -->
+  <div class="stats">
 
-  <div class="home-stats">
-
-    <div class="stat-card">
+    <div class="stat">
 
       <div class="stat-label">
-        Screening Mode
+        Screening
       </div>
 
       <div class="stat-value">
         Non-Invasive
       </div>
 
-      <div class="stat-description">
-        Optical sensor based screening
+      <div class="stat-small">
+        Optical sensor based
       </div>
 
     </div>
 
 
-    <div class="stat-card">
+    <div class="stat">
 
       <div class="stat-label">
         Measurement
@@ -1494,25 +1583,25 @@ tr:hover td{
         Bilirubin
       </div>
 
-      <div class="stat-description">
-        Total serum bilirubin estimate
+      <div class="stat-small">
+        Estimated mg/dL
       </div>
 
     </div>
 
 
-    <div class="stat-card">
+    <div class="stat">
 
       <div class="stat-label">
-        Console Status
+        Device
       </div>
 
       <div class="stat-value">
         Ready
       </div>
 
-      <div class="stat-description">
-        Device interface available
+      <div class="stat-small">
+        NS-01 interface
       </div>
 
     </div>
@@ -1520,16 +1609,14 @@ tr:hover td{
   </div>
 
 
-  <!-- QUICK ACTIONS -->
-
-  <div class="home-section-title">
+  <div class="workflow-title">
 
     <h2>
-      Clinical workflow
+      Clinical Workflow
     </h2>
 
     <span>
-      SELECT AN OPERATION
+      SELECT OPERATION
     </span>
 
   </div>
@@ -1537,18 +1624,47 @@ tr:hover td{
 
   <div class="home-cards">
 
-    <div class="home-card" onclick="goTo('predict')">
 
-      <div class="card-top">
+    <div
+      class="home-card"
+      onclick="goTo('profile')"
+    >
 
-        <div class="card-icon">
-          01
-        </div>
+      <div class="card-icon">
+        01
+      </div>
 
-        <div class="card-number">
-          MEASUREMENT
-        </div>
+      <div class="card-number">
+        PATIENT SETUP
+      </div>
 
+      <h3>
+        Baby Profile
+      </h3>
+
+      <p>
+        Create and save the baby's profile before
+        starting a screening measurement.
+      </p>
+
+      <div class="card-action">
+        CREATE PROFILE →
+      </div>
+
+    </div>
+
+
+    <div
+      class="home-card"
+      onclick="goTo('predict')"
+    >
+
+      <div class="card-icon">
+        02
+      </div>
+
+      <div class="card-number">
+        MEASUREMENT
       </div>
 
       <h3>
@@ -1556,29 +1672,28 @@ tr:hover td{
       </h3>
 
       <p>
-        Select a baby profile, record the age at measurement,
-        receive sensor values and generate a bilirubin estimate.
+        Select the baby and start a new device
+        reading to obtain a bilirubin estimate.
       </p>
 
-      <div class="card-arrow">
-        START MEASUREMENT →
+      <div class="card-action">
+        TAKE READING →
       </div>
 
     </div>
 
 
-    <div class="home-card" onclick="goTo('history')">
+    <div
+      class="home-card"
+      onclick="goTo('history')"
+    >
 
-      <div class="card-top">
+      <div class="card-icon">
+        03
+      </div>
 
-        <div class="card-icon">
-          02
-        </div>
-
-        <div class="card-number">
-          RECORDS
-        </div>
-
+      <div class="card-number">
+        RECORDS
       </div>
 
       <h3>
@@ -1586,12 +1701,38 @@ tr:hover td{
       </h3>
 
       <p>
-        Search a baby using their unique code and review
-        previously recorded bilirubin measurements.
+        Search a baby code and review all previous
+        readings recorded for that baby.
       </p>
 
-      <div class="card-arrow">
-        OPEN RECORDS →
+      <div class="card-action">
+        VIEW HISTORY →
+      </div>
+
+    </div>
+
+
+    <div class="home-card">
+
+      <div class="card-icon">
+        04
+      </div>
+
+      <div class="card-number">
+        DEVICE
+      </div>
+
+      <h3>
+        Sensor Console
+      </h3>
+
+      <p>
+        Optical sensor values are received and
+        processed through the connected backend.
+      </p>
+
+      <div class="card-action">
+        DEVICE READY ●
       </div>
 
     </div>
@@ -1599,14 +1740,185 @@ tr:hover td{
   </div>
 
 
-  <div class="console-footer">
+  <div class="footer">
 
     <span>
       NEOSCAN / CLINICAL CONSOLE
     </span>
 
     <span>
-      SCREENING WORKFLOW
+      NON-INVASIVE SCREENING
+    </span>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     BABY PROFILE
+===================================================== -->
+
+<section class="page" id="page-profile">
+
+  <div class="eyebrow">
+    Patient Registration
+  </div>
+
+  <h1>
+    Baby Profile
+  </h1>
+
+  <p class="sub">
+    Create and save the baby's profile before taking
+    a jaundice screening reading.
+  </p>
+
+
+  <div class="profile-layout">
+
+
+    <div class="panel">
+
+      <div class="panel-header">
+
+        <div class="panel-title">
+          Baby Information
+        </div>
+
+        <div class="panel-code">
+          PROFILE / 01
+        </div>
+
+      </div>
+
+
+      <div class="panel-body">
+
+        <div class="grid">
+
+          <div class="field">
+
+            <label>
+              Baby Code / ID
+            </label>
+
+            <input
+              id="profile_baby_code"
+              placeholder="e.g. BABY_001"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label>
+              Sex
+            </label>
+
+            <select id="profile_sex">
+
+              <option value="F">
+                Female
+              </option>
+
+              <option value="M">
+                Male
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="field">
+
+            <label>
+              Gestational Age (weeks)
+            </label>
+
+            <input
+              id="profile_gest"
+              type="number"
+              placeholder="e.g. 40"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label>
+              Skin Tone Category
+            </label>
+
+            <input
+              id="profile_skin"
+              type="number"
+              placeholder="e.g. 3"
+            >
+
+          </div>
+
+        </div>
+
+
+        <button
+          class="save-profile-btn"
+          id="saveProfileBtn"
+          onclick="saveBabyProfile()"
+        >
+          SAVE BABY PROFILE
+        </button>
+
+
+        <div
+          class="error-box"
+          id="profileError"
+        ></div>
+
+      </div>
+
+    </div>
+
+
+    <div class="profile-summary">
+
+      <div class="profile-summary-label">
+        Patient Registry
+      </div>
+
+      <h3>
+        Neonatal Profile
+      </h3>
+
+      <p>
+        Baby identification details are stored before
+        a reading is associated with the patient record.
+      </p>
+
+      <div class="profile-status">
+
+        <span class="status-dot"></span>
+
+        PROFILE REGISTRATION READY
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="footer">
+
+    <span>
+      PATIENT REGISTRATION
+    </span>
+
+    <span>
+      NEOSCAN / PROFILE
     </span>
 
   </div>
@@ -1620,67 +1932,160 @@ tr:hover td{
 
 <section class="page" id="page-predict">
 
-  <div class="page-header">
-
-    <div>
-
-      <div class="eyebrow">
-        New Measurement
-      </div>
-
-      <h1>
-        Baby profile & reading
-      </h1>
-
-      <p class="sub">
-        Enter the neonatal profile and measurement information.
-        Sensor readings can be received from the connected device.
-      </p>
-
-    </div>
-
-    <div class="header-status">
-      DEVICE <span>● READY</span>
-    </div>
-
+  <div class="eyebrow">
+    New Measurement
   </div>
 
+  <h1>
+    Take a Reading
+  </h1>
 
-  <div class="reading-layout">
+  <p class="sub">
+    Select the baby's profile and record the measurement
+    information before initiating the device reading.
+  </p>
 
 
-    <!-- LEFT FORM -->
+  <div class="profile-layout">
 
-    <div>
 
-      <div class="panel">
+    <div class="panel">
 
-        <div class="panel-header">
+      <div class="panel-header">
 
-          <div class="panel-title">
-            Baby Profile
+        <div class="panel-title">
+          Reading Details
+        </div>
+
+        <div class="panel-code">
+          READING / 01
+        </div>
+
+      </div>
+
+
+      <div class="panel-body">
+
+        <div class="grid">
+
+          <div class="field">
+
+            <label>
+              Baby Code
+            </label>
+
+            <input
+              id="baby_code"
+              value="BABY_001"
+            >
+
           </div>
 
-          <div class="panel-code">
-            PROFILE / 01
+
+          <div class="field">
+
+            <label>
+              Sex
+            </label>
+
+            <select id="sex">
+
+              <option value="F">
+                F
+              </option>
+
+              <option value="M">
+                M
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="field">
+
+            <label>
+              Gestational Age (weeks)
+            </label>
+
+            <input
+              id="gest"
+              type="number"
+              value="40"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label>
+              Skin Tone Category
+            </label>
+
+            <input
+              id="skin"
+              type="number"
+              value="3"
+            >
+
+          </div>
+
+
+          <div class="field full">
+
+            <label>
+              Age at Reading (hours)
+            </label>
+
+            <input
+              id="age"
+              type="number"
+              value="9"
+            >
+
           </div>
 
         </div>
 
 
-        <div class="panel-body">
+        <div class="section-label">
+          Optical Sensor
+        </div>
+
+
+        <div class="sensor-panel">
+
+          <div class="sensor-head">
+
+            <strong>
+              Sensor Values
+            </strong>
+
+            <div class="sensor-ready">
+
+              <span class="status-dot"></span>
+
+              DEVICE READY
+
+            </div>
+
+          </div>
+
 
           <div class="grid">
 
             <div class="field">
 
               <label>
-                Baby Code
+                Red
               </label>
 
               <input
-                id="baby_code"
-                value="BABY_001"
+                id="red"
+                type="number"
+                value="682"
               >
 
             </div>
@@ -1689,34 +2094,13 @@ tr:hover td{
             <div class="field">
 
               <label>
-                Sex
-              </label>
-
-              <select id="sex">
-
-                <option value="F">
-                  F
-                </option>
-
-                <option value="M">
-                  M
-                </option>
-
-              </select>
-
-            </div>
-
-
-            <div class="field">
-
-              <label>
-                Gestational Age (weeks)
+                Green
               </label>
 
               <input
-                id="gest"
+                id="green"
                 type="number"
-                value="40"
+                value="524"
               >
 
             </div>
@@ -1725,287 +2109,187 @@ tr:hover td{
             <div class="field">
 
               <label>
-                Skin Tone Category
+                Blue
               </label>
 
               <input
-                id="skin"
+                id="blue"
                 type="number"
-                value="3"
+                value="403"
               >
 
             </div>
 
 
-            <div class="field full">
+            <div class="field">
 
               <label>
-                Age at Reading (hours)
+                Clear
               </label>
 
               <input
-                id="age"
+                id="clear"
                 type="number"
-                value="9"
+                value="1626"
               >
 
             </div>
 
           </div>
 
-
-          <!-- SENSOR -->
-
-          <div class="section-label">
-            Optical Sensor
-          </div>
-
-
-          <div class="sensor-panel">
-
-            <div class="sensor-title">
-
-              <strong>
-                Sensor Values
-              </strong>
-
-              <div class="sensor-state">
-
-                <span class="status-dot"></span>
-
-                INPUT READY
-
-              </div>
-
-            </div>
-
-
-            <div class="grid">
-
-              <div class="field">
-
-                <label>
-                  Red
-                </label>
-
-                <input
-                  id="red"
-                  type="number"
-                  value="682"
-                >
-
-              </div>
-
-
-              <div class="field">
-
-                <label>
-                  Green
-                </label>
-
-                <input
-                  id="green"
-                  type="number"
-                  value="524"
-                >
-
-              </div>
-
-
-              <div class="field">
-
-                <label>
-                  Blue
-                </label>
-
-                <input
-                  id="blue"
-                  type="number"
-                  value="403"
-                >
-
-              </div>
-
-
-              <div class="field">
-
-                <label>
-                  Clear
-                </label>
-
-                <input
-                  id="clear"
-                  type="number"
-                  value="1626"
-                >
-
-              </div>
-
-            </div>
-
-          </div>
-
-
-          <button
-            class="submit-btn"
-            id="submitBtn"
-            onclick="submitReading()"
-          >
-            RUN BILIRUBIN MEASUREMENT
-          </button>
-
-
-          <div
-            class="error-box"
-            id="errorBox"
-          ></div>
-
-
-        </div>
-
-      </div>
-
-
-      <!-- RESULT -->
-
-      <div
-        class="readout"
-        id="readout"
-      >
-
-        <div class="readout-header">
-
-          <div>
-
-            <div class="readout-label">
-              Predicted Total Serum Bilirubin
-            </div>
-
-            <div>
-
-              <span
-                class="readout-value"
-                id="readoutValue"
-              >
-                --
-              </span>
-
-              <span class="readout-unit">
-                mg/dL
-              </span>
-
-            </div>
-
-          </div>
-
-
-          <div class="result-status">
-            MEASUREMENT COMPLETE
-          </div>
-
         </div>
 
 
-        <div class="readout-meta">
+        <button
+          class="submit-btn"
+          id="submitBtn"
+          onclick="submitReading()"
+        >
+          TAKE READING
+        </button>
 
-          <span id="readoutAge"></span>
 
-          <span id="readoutTime"></span>
-
-        </div>
+        <div
+          class="error-box"
+          id="errorBox"
+        ></div>
 
       </div>
 
     </div>
 
 
-    <!-- RIGHT DEVICE PANEL -->
-
     <div class="device-panel">
 
-      <div class="device-panel-label">
-        Connected Screening Device
+      <div class="device-label">
+        Connected Device
       </div>
 
       <h3>
-        NeoScan Sensor
+        NeoScan NS-01
       </h3>
 
-      <div class="device-panel-description">
-        Optical measurement interface for neonatal jaundice
-        screening and bilirubin estimation.
+      <p>
+        Optical measurement interface for neonatal
+        jaundice screening.
+      </p>
+
+
+      <div class="device-visual-small">
+
+        <div class="ring">
+
+          <div class="ring-core"></div>
+
+        </div>
+
       </div>
 
 
-      <div class="device-mini">
+      <div class="device-row">
 
-        <div class="mini-ring">
+        <span>
+          DEVICE
+        </span>
 
-          <div class="mini-core"></div>
-
-        </div>
+        <strong>
+          NS-01
+        </strong>
 
       </div>
 
 
-      <div class="device-info">
+      <div class="device-row">
 
-        <div class="device-info-row">
+        <span>
+          CONNECTION
+        </span>
 
-          <span>
-            DEVICE
-          </span>
+        <strong>
+          READY
+        </strong>
 
-          <strong>
-            NS-01
-          </strong>
-
-        </div>
+      </div>
 
 
-        <div class="device-info-row">
+      <div class="device-row">
 
-          <span>
-            CONNECTION
-          </span>
+        <span>
+          SENSOR
+        </span>
 
-          <strong>
-            READY
-          </strong>
+        <strong>
+          OPTICAL
+        </strong>
 
-        </div>
-
-
-        <div class="device-info-row">
-
-          <span>
-            SENSOR
-          </span>
-
-          <strong>
-            OPTICAL
-          </strong>
-
-        </div>
+      </div>
 
 
-        <div class="device-info-row">
+      <div class="device-row">
 
-          <span>
-            MODE
-          </span>
+        <span>
+          MODE
+        </span>
 
-          <strong>
-            SCREENING
-          </strong>
-
-        </div>
+        <strong>
+          SCREENING
+        </strong>
 
       </div>
 
     </div>
 
   </div>
+
+
+  <div
+    class="readout"
+    id="readout"
+  >
+
+    <div class="readout-top">
+
+      <div>
+
+        <div class="readout-label">
+          Predicted Total Serum Bilirubin
+        </div>
+
+        <div>
+
+          <span
+            class="readout-value"
+            id="readoutValue"
+          >
+            --
+          </span>
+
+          <span class="readout-unit">
+            mg/dL
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="result-badge">
+        MEASUREMENT COMPLETE
+      </div>
+
+    </div>
+
+
+    <div class="readout-meta">
+
+      <span id="readoutAge"></span>
+
+      <span id="readoutTime"></span>
+
+    </div>
+
+  </div>
+
 
 </section>
 
@@ -2016,41 +2300,30 @@ tr:hover td{
 
 <section class="page" id="page-history">
 
-  <div class="page-header">
-
-    <div>
-
-      <div class="eyebrow">
-        Patient Records
-      </div>
-
-      <h1>
-        Reading history
-      </h1>
-
-      <p class="sub">
-        Search using the baby's unique identification code
-        to review recorded measurements.
-      </p>
-
-    </div>
-
+  <div class="eyebrow">
+    Patient Records
   </div>
 
+  <h1>
+    Reading History
+  </h1>
 
-  <div class="history-toolbar">
+  <p class="sub">
+    Search using the baby's unique code to review
+    previously recorded measurements.
+  </p>
+
+
+  <div class="history-search">
 
     <input
       id="historySearch"
-      placeholder="Enter baby code — e.g. BABY_001"
+      placeholder="e.g. BABY_001"
       value="BABY_001"
     >
 
-    <button
-      class="history-search-btn"
-      onclick="loadHistory()"
-    >
-      SEARCH RECORDS
+    <button onclick="loadHistory()">
+      SEARCH
     </button>
 
   </div>
@@ -2059,7 +2332,7 @@ tr:hover td{
   <div id="historyResults"></div>
 
 
-  <div class="console-footer">
+  <div class="footer">
 
     <span>
       NEOSCAN / PATIENT RECORDS
@@ -2072,6 +2345,7 @@ tr:hover td{
   </div>
 
 </section>
+
 
 </main>
 
@@ -2089,39 +2363,50 @@ const API_BASE = "http://127.0.0.1:5000";
    NAVIGATION
 ===================================================== */
 
-document.querySelectorAll('nav button').forEach(btn => {
+document
+  .querySelectorAll('nav button')
+  .forEach(btn => {
 
-  btn.addEventListener('click', () => {
+    btn.addEventListener('click', () => {
 
-    goTo(btn.dataset.page);
+      goTo(btn.dataset.page);
+
+    });
 
   });
-
-});
 
 
 function goTo(page){
 
   document
     .querySelectorAll('.page')
-    .forEach(p => p.classList.remove('active'));
+    .forEach(p =>
+      p.classList.remove('active')
+    );
+
 
   document
     .querySelectorAll('nav button')
-    .forEach(b => b.classList.remove('active'));
+    .forEach(b =>
+      b.classList.remove('active')
+    );
+
 
   document
     .getElementById('page-' + page)
     .classList.add('active');
 
-  const navButton =
+
+  const button =
     document.querySelector(
       `nav button[data-page="${page}"]`
     );
 
-  if(navButton){
-    navButton.classList.add('active');
+
+  if(button){
+    button.classList.add('active');
   }
+
 
   window.scrollTo({
     top:0,
@@ -2132,19 +2417,189 @@ function goTo(page){
 
 
 /* =====================================================
-   PREDICT / NEW READING
+   BABY PROFILE SAVE
+===================================================== */
+
+async function saveBabyProfile(){
+
+  const btn =
+    document.getElementById(
+      'saveProfileBtn'
+    );
+
+  const error =
+    document.getElementById(
+      'profileError'
+    );
+
+
+  error.classList.remove('show');
+
+
+  const baby_code =
+    document
+      .getElementById(
+        'profile_baby_code'
+      )
+      .value
+      .trim();
+
+
+  const sex =
+    document.getElementById(
+      'profile_sex'
+    ).value;
+
+
+  const gestational_age_weeks =
+    parseFloat(
+      document.getElementById(
+        'profile_gest'
+      ).value
+    );
+
+
+  const skin_tone_category =
+    parseInt(
+      document.getElementById(
+        'profile_skin'
+      ).value
+    );
+
+
+  if(!baby_code){
+
+    error.textContent =
+      "Please enter Baby Code.";
+
+    error.classList.add('show');
+
+    return;
+
+  }
+
+
+  btn.disabled = true;
+
+  btn.textContent =
+    "SAVING PROFILE...";
+
+
+  try{
+
+    const res =
+      await fetch(
+        `${API_BASE}/babies`,
+        {
+          method:"POST",
+
+          headers:{
+            "Content-Type":"application/json"
+          },
+
+          body:JSON.stringify({
+
+            baby_code,
+            sex,
+            gestational_age_weeks,
+            skin_tone_category
+
+          })
+
+        }
+      );
+
+
+    if(!res.ok){
+
+      const data =
+        await res
+          .json()
+          .catch(() => ({
+            detail:"Unable to save profile"
+          }));
+
+      throw new Error(
+        data.detail ||
+        "Unable to save profile"
+      );
+
+    }
+
+
+    alert(
+      `Baby profile ${baby_code} saved successfully.`
+    );
+
+
+    /* Automatically use saved baby for reading */
+
+    document.getElementById(
+      'baby_code'
+    ).value = baby_code;
+
+
+    document.getElementById(
+      'sex'
+    ).value = sex;
+
+
+    document.getElementById(
+      'gest'
+    ).value =
+      gestational_age_weeks;
+
+
+    document.getElementById(
+      'skin'
+    ).value =
+      skin_tone_category;
+
+
+    goTo('predict');
+
+
+  }catch(e){
+
+    error.textContent =
+      "Couldn't save the baby profile — "
+      + e.message;
+
+
+    error.classList.add('show');
+
+  }finally{
+
+    btn.disabled = false;
+
+    btn.textContent =
+      "SAVE BABY PROFILE";
+
+  }
+
+}
+
+
+/* =====================================================
+   NEW READING
 ===================================================== */
 
 async function submitReading(){
 
   const btn =
-    document.getElementById('submitBtn');
+    document.getElementById(
+      'submitBtn'
+    );
 
   const errorBox =
-    document.getElementById('errorBox');
+    document.getElementById(
+      'errorBox'
+    );
 
   const readout =
-    document.getElementById('readout');
+    document.getElementById(
+      'readout'
+    );
 
 
   errorBox.classList.remove('show');
@@ -2155,44 +2610,62 @@ async function submitReading(){
   const body = {
 
     baby_code:
-      document.getElementById('baby_code').value,
+      document.getElementById(
+        'baby_code'
+      ).value,
 
     sex:
-      document.getElementById('sex').value,
+      document.getElementById(
+        'sex'
+      ).value,
 
     gestational_age_weeks:
       parseFloat(
-        document.getElementById('gest').value
+        document.getElementById(
+          'gest'
+        ).value
       ),
 
     skin_tone_category:
       parseInt(
-        document.getElementById('skin').value
+        document.getElementById(
+          'skin'
+        ).value
       ),
 
     age_hours:
       parseFloat(
-        document.getElementById('age').value
+        document.getElementById(
+          'age'
+        ).value
       ),
 
     red:
       parseFloat(
-        document.getElementById('red').value
+        document.getElementById(
+          'red'
+        ).value
       ),
 
     green:
       parseFloat(
-        document.getElementById('green').value
+        document.getElementById(
+          'green'
+        ).value
       ),
 
     blue:
       parseFloat(
-        document.getElementById('blue').value
+        document.getElementById(
+          'blue'
+        ).value
       ),
 
     clear:
       parseFloat(
-        document.getElementById('clear').value
+        document.getElementById(
+          'clear'
+        ).value
       )
 
   };
@@ -2201,23 +2674,26 @@ async function submitReading(){
   btn.disabled = true;
 
   btn.textContent =
-    "PROCESSING MEASUREMENT...";
+    "READING...";
 
 
   try{
 
-    const res = await fetch(
-      `${API_BASE}/predict`,
-      {
-        method:"POST",
+    const res =
+      await fetch(
+        `${API_BASE}/predict`,
+        {
+          method:"POST",
 
-        headers:{
-          "Content-Type":"application/json"
-        },
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
 
-        body:JSON.stringify(body)
-      }
-    );
+          body:
+            JSON.stringify(body)
+        }
+      );
 
 
     if(!res.ok){
@@ -2230,7 +2706,8 @@ async function submitReading(){
           }));
 
       throw new Error(
-        err.detail || "Request failed"
+        err.detail ||
+        "Request failed"
       );
 
     }
@@ -2240,21 +2717,21 @@ async function submitReading(){
       await res.json();
 
 
-    document
-      .getElementById('readoutValue')
-      .textContent =
+    document.getElementById(
+      'readoutValue'
+    ).textContent =
       data.predicted_bilirubin_mg_dl;
 
 
-    document
-      .getElementById('readoutAge')
-      .textContent =
+    document.getElementById(
+      'readoutAge'
+    ).textContent =
       `Age at reading: ${data.age_hours}h`;
 
 
-    document
-      .getElementById('readoutTime')
-      .textContent =
+    document.getElementById(
+      'readoutTime'
+    ).textContent =
       new Date(
         data.created_at
       ).toLocaleString();
@@ -2272,6 +2749,7 @@ async function submitReading(){
       + e.message
       + ")";
 
+
     errorBox.classList.add('show');
 
   }finally{
@@ -2279,7 +2757,7 @@ async function submitReading(){
     btn.disabled = false;
 
     btn.textContent =
-      "RUN BILIRUBIN MEASUREMENT";
+      "TAKE READING";
 
   }
 
@@ -2294,9 +2772,12 @@ async function loadHistory(){
 
   const code =
     document
-      .getElementById('historySearch')
+      .getElementById(
+        'historySearch'
+      )
       .value
       .trim();
+
 
   const results =
     document.getElementById(
@@ -2328,9 +2809,10 @@ async function loadHistory(){
 
   try{
 
-    const res = await fetch(
-      `${API_BASE}/babies/${encodeURIComponent(code)}/readings`
-    );
+    const res =
+      await fetch(
+        `${API_BASE}/babies/${encodeURIComponent(code)}/readings`
+      );
 
 
     if(res.status === 404){
@@ -2338,8 +2820,7 @@ async function loadHistory(){
       results.innerHTML = `
         <div class="empty-state">
           <div class="empty-icon">?</div>
-          No baby found with code
-          "${code}".
+          No baby found with code "${code}".
         </div>
       `;
 
@@ -2366,8 +2847,7 @@ async function loadHistory(){
       results.innerHTML = `
         <div class="empty-state">
           <div class="empty-icon">—</div>
-          No readings recorded yet for
-          ${code}.
+          No readings recorded yet for ${code}.
         </div>
       `;
 
@@ -2378,57 +2858,57 @@ async function loadHistory(){
 
     let rows =
       readings
-      .map(r => `
+        .map(r => `
 
-        <tr>
+          <tr>
 
-          <td>
-            ${r.age_hours}h
-          </td>
+            <td>
+              ${r.age_hours}h
+            </td>
 
-          <td class="bilirubin-value">
-            ${r.predicted_bilirubin_mg_dl}
-            mg/dL
-          </td>
+            <td class="bilirubin">
+              ${r.predicted_bilirubin_mg_dl}
+              mg/dL
+            </td>
 
-          <td class="sensor-values">
-            ${r.red}
-            /
-            ${r.green}
-            /
-            ${r.blue}
-            /
-            ${r.clear}
-          </td>
+            <td class="sensor-values">
+              ${r.red}
+              /
+              ${r.green}
+              /
+              ${r.blue}
+              /
+              ${r.clear}
+            </td>
 
-          <td>
-            ${new Date(
-              r.created_at
-            ).toLocaleString()}
-          </td>
+            <td>
+              ${new Date(
+                r.created_at
+              ).toLocaleString()}
+            </td>
 
-        </tr>
+          </tr>
 
-      `)
-      .join('');
+        `)
+        .join('');
 
 
     results.innerHTML = `
 
       <div class="history-info">
 
-        <div class="history-info-title">
-          Patient measurements
+        <div class="history-title">
+          Patient Measurements
         </div>
 
-        <div class="history-info-code">
+        <div class="history-code">
           ${code}
         </div>
 
       </div>
 
 
-      <div class="history-table-wrap">
+      <div class="table-wrap">
 
         <table>
 
@@ -2455,7 +2935,6 @@ async function loadHistory(){
             </tr>
 
           </thead>
-
 
           <tbody>
             ${rows}
@@ -2494,3 +2973,4 @@ async function loadHistory(){
 
 </body>
 </html>
+```
